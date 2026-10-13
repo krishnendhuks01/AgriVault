@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Policies | AgriVault</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+        body {
+            background: #f3f8f1;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background: #1b5e20;
+        }
+
+        .page-heading {
+            color: #1b5e20;
+            font-weight: bold;
+        }
+
+        .policy-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+            height: 100%;
+            transition: transform 0.2s;
+        }
+
+        .policy-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .section-title {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        .btn-green {
+            background: #2e7d32;
+            color: white;
+            border-radius: 8px;
+        }
+
+        .btn-green:hover {
+            background: #1b5e20;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark px-4 py-3">
+    <a class="navbar-brand fw-bold" href="{{ url_for('user_dashboard') }}">
+        🌱 AgriVault
+    </a>
+
+    <a href="{{ url_for('user_dashboard') }}"
+       class="btn btn-light btn-sm">
+        Back to Dashboard
+    </a>
+</nav>
+
+<div class="container py-5">
+
+    <div class="text-center mb-5">
+        <h2 class="page-heading">Government Agricultural Policies</h2>
+        <p class="text-muted">
+            Explore government schemes and benefits available for farmers.
+        </p>
+    </div>
+
+    {% if policies %}
+
+    <div class="row g-4">
+
+        {% for policy in policies %}
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card policy-card p-3">
+
+                <div class="card-body">
+
+                    <span class="badge bg-success mb-3">
+                        Government Scheme
+                    </span>
+
+                    <h5 class="card-title fw-bold">
+                        {{ policy.title }}
+                    </h5>
+
+                    {% if policy.department %}
+                    <p class="text-muted small mb-3">
+                        {{ policy.department }}
+                    </p>
+                    {% endif %}
+
+                    <p>{{ policy.description }}</p>
+
+                    {% if policy.eligibility %}
+                    <h6 class="section-title">Eligibility</h6>
+                    <p>{{ policy.eligibility }}</p>
+                    {% endif %}
+
+                    {% if policy.benefits %}
+                    <h6 class="section-title">Benefits</h6>
+                    <p>{{ policy.benefits }}</p>
+                    {% endif %}
+
+                    {% if policy.official_url %}
+                    <a href="{{ policy.official_url }}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="btn btn-green mt-2">
+                        Visit Official Website ↗
+                    </a>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="text-center bg-white rounded-4 p-5 shadow-sm">
+        <h4>No Government Policies Available</h4>
+        <p class="text-muted">
+            Government schemes will appear here once they are added by the admin.
+        </p>
+    </div>
+
+    {% endif %}
+
+</div>
+
+<footer class="text-center py-4 text-muted">
+    © 2026 AgriVault | Agricultural Knowledge Repository
+</footer>
+
+</body>
+</html>

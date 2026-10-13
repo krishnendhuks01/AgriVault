@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AgriVault | Agricultural Knowledge Repository</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Google Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8faf7;
+            color: #26352a;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: #ffffff;
+            padding: 16px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+        }
+
+        .navbar-brand {
+            font-size: 25px;
+            font-weight: 700;
+            color: #2e7d32 !important;
+        }
+
+        .navbar-brand span {
+            color: #8bc34a;
+        }
+
+        .nav-link {
+            color: #37483b !important;
+            font-weight: 500;
+            margin-left: 18px;
+        }
+
+        .nav-link:hover {
+            color: #2e7d32 !important;
+        }
+
+        .login-btn {
+            border: 1px solid #2e7d32;
+            color: #2e7d32 !important;
+            padding: 8px 20px !important;
+            border-radius: 25px;
+        }
+
+        .login-btn:hover {
+            background: #2e7d32;
+            color: white !important;
+        }
+
+        .register-btn {
+            background: #2e7d32;
+            color: white !important;
+            padding: 9px 21px !important;
+            border-radius: 25px;
+        }
+
+        .register-btn:hover {
+            background: #256628;
+            color: white !important;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 570px;
+            display: flex;
+            align-items: center;
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(247, 251, 246, 0.98) 0%,
+                    rgba(247, 251, 246, 0.92) 48%,
+                    rgba(247, 251, 246, 0.55) 100%
+                ),
+                linear-gradient(135deg, #e9f5e8, #f8faf7);
+            padding: 70px 0;
+        }
+
+        .hero-content {
+            max-width: 650px;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            background: #e3f2e1;
+            color: #2e7d32;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            line-height: 1.2;
+            font-weight: 700;
+            color: #23442a;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            color: #4caf50;
+        }
+
+        .hero p {
+            font-size: 17px;
+            line-height: 1.8;
+            color: #607064;
+            margin-bottom: 30px;
+        }
+
+        .hero-btn {
+            display: inline-block;
+            background: #2e7d32;
+            color: white;
+            text-decoration: none;
+            padding: 13px 28px;
+            border-radius: 30px;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .hero-btn:hover {
+            background: #256628;
+            color: white;
+        }
+
+        .secondary-btn {
+            display: inline-block;
+            border: 1px solid #2e7d32;
+            color: #2e7d32;
+            text-decoration: none;
+            padding: 12px 27px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+
+        .secondary-btn:hover {
+            background: #2e7d32;
+            color: white;
+        }
+
+        /* Features */
+        .features {
+            padding: 75px 0;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .section-title h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #23442a;
+        }
+
+        .section-title p {
+            color: #718075;
+            margin-top: 10px;
+        }
+
+        .feature-card {
+            background: #f8fbf7;
+            border: 1px solid #e5eee4;
+            border-radius: 18px;
+            padding: 30px;
+            height: 100%;
+            transition: 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 10px 25px rgba(46, 125, 50, 0.12);
+        }
+
+        .feature-icon {
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e4f3e2;
+            border-radius: 15px;
+            font-size: 27px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h4 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #29472f;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: #6b776d;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        /* About Section */
+        .about {
+            padding: 75px 0;
+            background: #eef7ed;
+        }
+
+        .about-box {
+            background: white;
+            border-radius: 22px;
+            padding: 45px;
+        }
+
+        .about h2 {
+            color: #23442a;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .about p {
+            color: #68746a;
+            line-height: 1.8;
+        }
+
+        .about-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 25px;
+        }
+
+        .about-list li {
+            margin-bottom: 13px;
+            color: #465449;
+        }
+
+        .about-list li::before {
+            content: "✓";
+            color: #2e7d32;
+            font-weight: 700;
+            margin-right: 10px;
+        }
+
+        /* CTA */
+        .cta {
+            padding: 70px 0;
+            background: #2e7d32;
+            text-align: center;
+            color: white;
+        }
+
+        .cta h2 {
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .cta p {
+            opacity: 0.9;
+            margin-bottom: 25px;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: white;
+            color: #2e7d32;
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+
+        .cta-btn:hover {
+            background: #f1f1f1;
+            color: #256628;
+        }
+
+        /* Footer */
+        footer {
+            background: #1f3023;
+            color: #d6ded7;
+            padding: 25px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        footer strong {
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                text-align: center;
+                min-height: 500px;
+            }
+
+            .hero h1 {
+                font-size: 38px;
+            }
+
+            .hero p {
+                font-size: 15px;
+            }
+
+            .nav-link {
+                margin-left: 0;
+            }
+
+            .about-box {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+
+            <a class="navbar-brand" href="/">
+                Agri<span>Vault</span> 🌾
+            </a>
+
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Knowledge</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link login-btn" href="/login">
+                            Login
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link register-btn" href="/register">
+                            Register
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Hero Section -->
+    <section class="hero">
+
+        <div class="container">
+
+            <div class="hero-content">
+
+                <div class="hero-tag">
+                    🌱 Smart Agriculture Knowledge Platform
+                </div>
+
+                <h1>
+                    Your Gateway to
+                    <span>Agricultural Knowledge</span>
+                </h1>
+
+                <p>
+                    AgriVault is an agricultural knowledge and policy repository
+                    that helps users easily discover reliable information about
+                    farming, crops, soil, pest management, modern agriculture
+                    and government policies.
+                </p>
+
+                <a href="/register" class="hero-btn">
+                    Get Started →
+                </a>
+
+                <a href="#features" class="secondary-btn">
+                    Explore
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+
+        <div class="container">
+
+            <div class="section-title">
+                <h2>What AgriVault Offers</h2>
+                <p>
+                    Everything you need to explore agricultural knowledge in one place.
+                </p>
+            </div>
+
+            <div class="row g-4">
+
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+
+                        <div class="feature-icon">
+                            🌾
+                        </div>
+
+                        <h4>Crop Knowledge</h4>
+
+                        <p>
+                            Access useful information about different crops,
+                            cultivation methods and farming practices.
+                        </p>
+
+                    </div>
+                </div>
+
+
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+
+                        <div class="feature-icon">
+                            🐛
+                        </div>
+
+                        <h4>Pest Management</h4>
+
+                        <p>
+                            Explore information about common agricultural
+                            pests, diseases and their management methods.
+                        </p>
+
+                    </div>
+                </div>
+
+
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+
+                        <div class="feature-icon">
+                            🏛️
+                        </div>
+
+                        <h4>Government Policies</h4>
+
+                        <p>
+                            Find agricultural schemes, policies and other
+                            government-related information.
+                        </p>
+
+                    </div>
+                </div>
+
+
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+
+                        <div class="feature-icon">
+                            🤖
+                        </div>
+
+                        <h4>Smart Query</h4>
+
+                        <p>
+                            Ask agricultural questions naturally and get
+                            relevant information from the knowledge repository.
+                        </p>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- About Section -->
+    <section class="about" id="about">
+
+        <div class="container">
+
+            <div class="about-box">
+
+                <div class="row align-items-center">
+
+                    <div class="col-lg-7">
+
+                        <h2>
+                            Knowledge for Better Agriculture 🌱
+                        </h2>
+
+                        <p>
+                            AgriVault brings agricultural information together
+                            in a structured and easy-to-access repository.
+                            Instead of searching through multiple sources,
+                            users can explore organized agricultural content
+                            through a single platform.
+                        </p>
+
+                        <ul class="about-list">
+
+                            <li>
+                                Organized agricultural knowledge
+                            </li>
+
+                            <li>
+                                Crop and farming information
+                            </li>
+
+                            <li>
+                                Pest and disease management
+                            </li>
+
+                            <li>
+                                Government schemes and policies
+                            </li>
+
+                            <li>
+                                NLP-based agricultural query answering
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                    <div class="col-lg-5 text-center">
+
+                        <div style="
+                            font-size: 130px;
+                            padding: 20px;
+                        ">
+                            🌾
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Call To Action -->
+    <section class="cta">
+
+        <div class="container">
+
+            <h2>
+                Explore Agricultural Knowledge
+            </h2>
+
+            <p>
+                Start discovering useful agricultural information with AgriVault.
+            </p>
+
+            <a href="/register" class="cta-btn">
+                Create Your Account
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- Footer -->
+    <footer>
+
+        <div class="container">
+
+            <p class="mb-0">
+                © 2026 <strong>AgriVault</strong>.
+                Agricultural Knowledge and Policy Repository.
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <!-- Bootstrap JavaScript -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+</body>
+</html>
+```
