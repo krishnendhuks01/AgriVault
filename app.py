@@ -1,4 +1,3 @@
-
 from flask import (
     Flask, render_template, request, redirect,
     url_for, flash, session
@@ -11,9 +10,13 @@ import uuid
 import html
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = "agrivault_change_this_secret_key"
+app.secret_key = os.getenv("FLASK_SECRET_KEY")
 
 # Upload settings
 UPLOAD_FOLDER = os.path.join(app.root_path, "static", "uploads")
@@ -30,7 +33,7 @@ db = mysql.connector.connect(
     host="localhost",
     port=3307,
     user="root",
-    password="YOUR_PASSWORD",
+    password=os.getenv("DB_PASSWORD"),
     database="agrivault_db"
 )
 
@@ -121,212 +124,123 @@ def user_dashboard():
 # NLP / Article Query
 
 # NLP / Article Query
+
+
 @app.route("/query", methods=["GET", "POST"])
 def query():
-    if request.method == "POST":
-        question = request.form.get("question", "").strip()
+    if request.method == "GET":
+        return render_template("query.html")
 
-        if not question:
-            flash("Please enter an agricultural question.", "warning")
-            return render_template("query.html")
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.metrics.pairwise import cosine_similarity
 
-        cursor = db.cursor(dictionary=True)
+    question = request.form.get("question", "").strip()
+    print("QUERY POST RECEIVED:", request.method, request.form)
 
+    if not question:
+        return render_template(
+            "query.html",
+            error="Please enter your agricultural question."
+        )
+
+    cursor = db.cursor(dictionary=True)
+
+    try:
         cursor.execute("""
             SELECT article_id, title, content, keywords,
                    image_path, pdf_path
             FROM articles
         """)
-
         articles = cursor.fetchall()
+
+        cursor.execute("""
+            SELECT policy_id, title, description, department,
+                   eligibility, benefits, official_url, pdf_path
+            FROM government_policies
+        """)
+        policies = cursor.fetchall()
+    finally:
         cursor.close()
 
-        if not articles:
-            flash(
-                "No agricultural articles are available yet. "
-                "Please check back later.",
-                "warning"
-            )
-            return render_template("query.html")
+    documents = []
 
-        # Prepare searchable text for each article
-        documents = []
+    for article in articles:
+        searchable_text = " ".join([
+            str(article.get("title") or ""),
+            str(article.get("keywords") or ""),
+            str(article.get("content") or "")
+        ])
 
-        for article in articles:
-            text = " ".join([
-                article.get("title") or "",
-                article.get("keywords") or "",
-                article.get("content") or ""
-            ])
-            documents.append(text)
+        documents.append({
+            "type": "article",
+            "data": article,
+            "text": searchable_text
+        })
 
-        # TF-IDF converts text into numerical vectors
-        vectorizer = TfidfVectorizer(
-            lowercase=True,
-            stop_words="english",
-            ngram_range=(1, 2),
-            sublinear_tf=True
+    for policy in policies:
+        searchable_text = " ".join([
+            str(policy.get("title") or ""),
+            str(policy.get("description") or ""),
+            str(policy.get("department") or ""),
+            str(policy.get("eligibility") or ""),
+            str(policy.get("benefits") or "")
+        ])
+
+        documents.append({
+            "type": "policy",
+            "data": policy,
+            "text": searchable_text
+        })
+
+    if not documents:
+        return render_template(
+            "query.html",
+            question=question,
+            error="No agricultural articles or government policies are available yet."
         )
 
-        try:
-            tfidf_matrix = vectorizer.fit_transform(
-                documents + [question]
-            )
-        except ValueError:
-            flash(
-                "Not enough searchable text is available. "
-                "Please add article content or keywords.",
-                "warning"
-            )
-            return render_template("query.html")
+    texts = [item["text"] for item in documents]
+    texts.append(question)
 
-        # Compare the question with all articles
-        question_vector = tfidf_matrix[-1]
-        article_vectors = tfidf_matrix[:-1]
+    vectorizer = TfidfVectorizer(
+        lowercase=True,
+        stop_words="english",
+        ngram_range=(1, 2),
+        sublinear_tf=True
+    )
 
-        scores = cosine_similarity(
-            question_vector,
-            article_vectors
+    try:
+        tfidf_matrix = vectorizer.fit_transform(texts)
+        similarities = cosine_similarity(
+            tfidf_matrix[-1],
+            tfidf_matrix[:-1]
         ).flatten()
+    except ValueError:
+        similarities = []
 
-        best_index = scores.argmax()
-        best_score = float(scores[best_index])
+    if len(similarities) == 0:
+        best_index = -1
+        best_score = 0
+    else:
+        best_index = int(similarities.argmax())
+        best_score = float(similarities[best_index])
 
-        # Avoid displaying an unrelated article
-        if best_score < 0.05:
-            flash(
-                "No relevant agricultural information found. "
-                "Try different keywords or a more specific question.",
-                "warning"
-            )
-            return render_template("query.html")
+    if best_index == -1 or best_score < 0.05:
+        return render_template(
+            "query.html",
+            question=question,
+            error="No relevant information found. Try different keywords or ask a more specific question."
+        )
 
-        article = articles[best_index]
+    result = documents[best_index]
 
-        title = html.escape(article.get("title") or "")
-        content = html.escape(article.get("content") or "")
-        content = content.replace("\n", "<br>")
-
-        image_html = ""
-        pdf_html = ""
-
-        if article.get("image_path"):
-            image_url = url_for(
-                "static",
-                filename=article["image_path"]
-            )
-            image_html = f"""
-                <div class="mt-4">
-                    <h5>🖼️ Related Image</h5>
-                    <img src="{image_url}"
-                         alt="Agricultural article image"
-                         class="img-fluid rounded"
-                         style="max-height:400px">
-                </div>
-            """
-
-        if article.get("pdf_path"):
-            pdf_url = url_for(
-                "static",
-                filename=article["pdf_path"]
-            )
-            pdf_html = f"""
-                <div class="mt-4">
-                    <a href="{pdf_url}"
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       class="btn btn-outline-danger">
-                        📄 Open / View PDF
-                    </a>
-                </div>
-            """
-
-        return f"""
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport"
-                  content="width=device-width, initial-scale=1.0">
-            <title>Answer - AgriVault</title>
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-                  rel="stylesheet">
-            <style>
-                body {{
-                    font-family: Arial, sans-serif;
-                    background: #f4f8f3;
-                }}
-                .navbar {{ background: #2e7d32; }}
-                .navbar-brand {{
-                    color: white !important;
-                    font-weight: bold;
-                }}
-                .answer-box {{
-                    max-width: 800px;
-                    margin: 50px auto;
-                    background: white;
-                    padding: 30px;
-                    border-radius: 18px;
-                    box-shadow: 0 8px 25px rgba(0,0,0,.08);
-                }}
-                .answer-title {{
-                    color: #2e7d32;
-                    font-weight: bold;
-                }}
-                .answer-content {{
-                    background: #f4f8f3;
-                    padding: 22px;
-                    border-radius: 12px;
-                    margin-top: 20px;
-                    line-height: 1.8;
-                    overflow-wrap: anywhere;
-                }}
-            </style>
-        </head>
-        <body>
-            <nav class="navbar navbar-dark">
-                <div class="container">
-                    <a class="navbar-brand"
-                       href="/user_dashboard">🌾 AgriVault</a>
-                    <a href="/user_dashboard"
-                       class="text-white text-decoration-none">
-                        ← Dashboard
-                    </a>
-                </div>
-            </nav>
-
-            <div class="container">
-                <div class="answer-box">
-                    <h2 class="answer-title text-center">
-                        🤖🌱 {title}
-                    </h2>
-
-                    <div class="answer-content">
-                        <h5>📖 Agricultural Information</h5>
-                        <p class="mb-0">{content}</p>
-                    </div>
-
-                    {image_html}
-                    {pdf_html}
-
-                    <div class="text-center mt-4">
-                        <a href="/query" class="btn btn-success">
-                            🔍 Ask Another Question
-                        </a>
-                        <a href="/user_dashboard"
-                           class="btn btn-outline-success">
-                            ← Dashboard
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </body>
-        </html>
-        """
-
-    return render_template("query.html")
-
-
+    return render_template(
+        "query.html",
+        question=question,
+        result=result["data"],
+        result_type=result["type"],
+        similarity_score=round(best_score * 100, 1)
+    )
 
 # Login
 @app.route("/login", methods=["GET", "POST"])
@@ -388,7 +302,7 @@ def admin_dashboard():
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect(url_for("login"))
+    return redirect(url_for("home"))
 
 
 # View all articles
@@ -754,6 +668,63 @@ def user_policies():
     return render_template(
         "user_policies.html",
         policies=policies
+    )
+
+
+@app.route("/articles")
+def articles():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    cursor = db.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT article_id, title, content, keywords,
+                   image_path, pdf_path, category_id
+            FROM articles
+            ORDER BY article_id DESC
+        """)
+        articles_list = cursor.fetchall()
+
+        for article in articles_list:
+            article["category_name"] = None
+
+    finally:
+        cursor.close()
+
+    return render_template(
+        "articles.html",
+        articles=articles_list
+    )
+
+
+
+@app.route("/pest-articles")
+def pest_articles():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    cursor = db.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT a.article_id, a.title, a.content, a.keywords,
+                   a.image_path, a.pdf_path, c.category_name
+            FROM articles a
+            JOIN categories c ON a.category_id = c.category_id
+            WHERE LOWER(c.category_name) = %s
+            ORDER BY a.article_id DESC
+        """, ("pest management",))
+
+        articles_list = cursor.fetchall()
+
+    finally:
+        cursor.close()
+
+    return render_template(
+        "articles.html",
+        articles=articles_list
     )
 
 

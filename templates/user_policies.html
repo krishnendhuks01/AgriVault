@@ -18,6 +18,7 @@
         .navbar {
             background: #1b5e20;
         }
+        
 
         .page-heading {
             color: #1b5e20;
@@ -27,7 +28,7 @@
         .policy-card {
             border: none;
             border-radius: 15px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 14px rgba(233, 236, 234, 0.08);
             height: 100%;
             transition: transform 0.2s;
         }
@@ -41,6 +42,11 @@
             font-weight: bold;
         }
 
+        .nav-link {
+            color: white;
+            margin-left: 15px;
+        }
+
         .btn-green {
             background: #2e7d32;
             color: white;
@@ -51,20 +57,36 @@
             background: #1b5e20;
             color: white;
         }
+
+        .navbar-brand {
+            color: white;
+            font-weight: 700;
+            font-size: 25px;
+        }
     </style>
 </head>
 
 <body>
 
-<nav class="navbar navbar-dark px-4 py-3">
-    <a class="navbar-brand fw-bold" href="{{ url_for('user_dashboard') }}">
-        🌱 AgriVault
-    </a>
 
-    <a href="{{ url_for('user_dashboard') }}"
-       class="btn btn-light btn-sm">
-        Back to Dashboard
-    </a>
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('user_dashboard') }}">
+            🌿 AgriVault
+        </a>
+
+        <button class="navbar-toggler bg-light" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMenu">
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="{{ url_for('user_dashboard') }}">Dashboard</a>
+                <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+            </div>
+        </div>
+    </div>
 </nav>
 
 <div class="container py-5">
