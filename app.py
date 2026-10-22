@@ -11,6 +11,7 @@ import html
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
@@ -114,48 +115,6 @@ def register():
     return render_template("register.html")
 
 
-
-
-# Login
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        email = request.form.get("email", "").strip()
-        password = request.form.get("password", "")
-
-        cursor = db.cursor()
-
-        try:
-            cursor.execute("""
-                SELECT user_id, name, email, password, role
-                FROM users
-                WHERE email = %s AND password = %s
-            """, (email, password))
-
-            user = cursor.fetchone()
-
-        finally:
-            cursor.close()
-
-        if user:
-            session.clear()
-            session["user_id"] = user[0]
-            session["name"] = user[1]
-            session["email"] = user[2]
-            session["role"] = user[4]
-
-            if user[4] == "Admin":
-                return redirect(url_for("admin_dashboard"))
-
-            return redirect(url_for("user_dashboard"))
-
-        flash("Invalid email or password", "danger")
-        return redirect(url_for("login"))
-
-    return render_template("login.html")
-
-
-
 # User Dashboard
 @app.route("/user_dashboard")
 def user_dashboard():
@@ -166,11 +125,7 @@ def user_dashboard():
 
 # NLP / Article Query
 
-
-
-
-
-
+# NLP / Article Query
 @app.route("/query", methods=["GET", "POST"])
 def query():
     if request.method == "GET":
@@ -181,6 +136,7 @@ def query():
     if not question:
         return render_template(
             "query.html",
+            question=question,
             error="Please enter your agricultural question."
         )
 
@@ -204,89 +160,46 @@ def query():
     finally:
         cursor.close()
 
-    # Build article and policy records
     documents = []
 
     for article in articles:
-        searchable_text = " ".join([
+        text = " ".join([
             str(article.get("title") or ""),
             str(article.get("keywords") or ""),
             str(article.get("content") or "")
-        ])
+        ]).strip()
 
-        documents.append({
-            "type": "article",
-            "data": article,
-            "text": searchable_text,
-            "keywords": str(article.get("keywords") or "").lower()
-        })
+        if text:
+            documents.append({
+                "type": "article",
+                "data": article,
+                "text": text
+            })
 
     for policy in policies:
-        searchable_text = " ".join([
+        text = " ".join([
             str(policy.get("title") or ""),
             str(policy.get("description") or ""),
             str(policy.get("department") or ""),
             str(policy.get("eligibility") or ""),
             str(policy.get("benefits") or "")
-        ])
+        ]).strip()
 
-        documents.append({
-            "type": "policy",
-            "data": policy,
-            "text": searchable_text,
-            "keywords": searchable_text.lower()
-        })
+        if text:
+            documents.append({
+                "type": "policy",
+                "data": policy,
+                "text": text
+            })
 
-    # Extract search keywords
-    stop_words = {
-        "a", "an", "the", "is", "are", "was", "were",
-        "what", "how", "why", "when", "where", "which",
-        "and", "or", "of", "in", "on", "for", "to",
-        "with", "about", "me", "tell", "explain", "please"
-    }
-
-    
-    import re
-
-    query_words = {
-    word.lower()
-    for word in re.split(r"[\s,]+", question.strip())
-    if word.strip()
-} - stop_words
-
-
-    query_words.discard("")
-
-    if not query_words:
+    if not documents:
         return render_template(
             "query.html",
             question=question,
-            error="Please enter specific agricultural keywords."
+            error="No agricultural articles or government policies are available yet."
         )
 
-    # Match articles using ONLY their keywords column.
-    # Match policies using their available descriptive fields.
-    matched_documents = []
-
-    for document in documents:
-        searchable_keywords = document["keywords"]
-
-        if any(
-            word in searchable_keywords
-            for word in query_words
-        ):
-            matched_documents.append(document)
-
-    if not matched_documents:
-        return render_template(
-            "query.html",
-            question=question,
-            error="No articles or policies match your search keywords.",
-            results=[]
-        )
-
-    # Rank matching results using TF-IDF
-    texts = [item["text"] for item in matched_documents]
+    texts = [item["text"] for item in documents]
 
     try:
         vectorizer = TfidfVectorizer(
@@ -296,206 +209,92 @@ def query():
             sublinear_tf=True
         )
 
-        document_matrix = vectorizer.fit_transform(
-            texts + [question]
-        )
+        tfidf_matrix = vectorizer.fit_transform(texts + [question])
 
         similarities = cosine_similarity(
-            document_matrix[-1],
-            document_matrix[:-1]
+            tfidf_matrix[-1],
+            tfidf_matrix[:-1]
         ).flatten()
 
     except ValueError:
-        similarities = [0.0] * len(matched_documents)
+        similarities = []
 
-    for index, document in enumerate(matched_documents):
-        document["similarity_score"] = float(similarities[index])
+    if len(similarities) == 0 or similarities.max() <= 0:
+        return render_template(
+            "query.html",
+            question=question,
+            error="No relevant information found. Try different keywords or ask a more specific question."
+        )
 
-    matched_documents.sort(
-        key=lambda item: item["similarity_score"],
-        reverse=True
-    )
+    # Rank all documents by relevance
+    ranked_indices = similarities.argsort()[::-1]
+
+    results = []
+
+    for index in ranked_indices:
+        score = float(similarities[index])
+
+        # Skip results with very low relevance
+        if score < 0.05:
+            continue
+
+        results.append({
+            "type": documents[index]["type"],
+            "data": documents[index]["data"],
+            "similarity_score": score
+        })
+
+        # Display up to 5 relevant results
+        if len(results) == 5:
+            break
+
+    if not results:
+        return render_template(
+            "query.html",
+            question=question,
+            error="No relevant information found. Try different keywords or ask a more specific question."
+        )
 
     return render_template(
         "query.html",
         question=question,
-        results=matched_documents
+        results=results
     )
 
-
-# Manage Categories
-@app.route("/admin/categories")
-@admin_required
-def manage_categories():
-    cursor = db.cursor(dictionary=True)
-
-    try:
-        cursor.execute("""
-            SELECT c.category_id, c.category_name,
-                   COUNT(a.article_id) AS article_count
-            FROM categories c
-            LEFT JOIN articles a
-                ON c.category_id = a.category_id
-            GROUP BY c.category_id, c.category_name
-            ORDER BY c.category_name
-        """)
-        categories = cursor.fetchall()
-    finally:
-        cursor.close()
-
-    print("MANAGE CATEGORIES ROUTE HIT", flush=True)
-
-    return render_template(
-        "manage_categories.html",
-        categories=categories
-    )
-
-
-# Add Category
-@app.route("/admin/categories/add", methods=["GET", "POST"])
-@admin_required
-def add_category():
+# Login
+@app.route("/login", methods=["GET", "POST"])
+def login():
     if request.method == "POST":
-        category_name = request.form.get(
-            "category_name", ""
-        ).strip()
-
-        if not category_name:
-            flash("Category name is required.", "danger")
-            return redirect(url_for("add_category"))
+        email = request.form["email"]
+        password = request.form["password"]
 
         cursor = db.cursor()
-
-        try:
-            cursor.execute("""
-                INSERT INTO categories (category_name)
-                VALUES (%s)
-            """, (category_name,))
-            db.commit()
-            flash("Category added successfully!", "success")
-
-        except mysql.connector.IntegrityError:
-            db.rollback()
-            flash("This category already exists.", "danger")
-
-        finally:
-            cursor.close()
-
-        return redirect(url_for("manage_categories"))
-
-    return render_template(
-        "category_form.html",
-        category=None,
-        page_title="Add Category"
-    )
-
-
-# Edit Category
-@app.route(
-    "/admin/categories/edit/<int:category_id>",
-    methods=["GET", "POST"]
-)
-@admin_required
-def edit_category(category_id):
-    cursor = db.cursor(dictionary=True)
-
-    try:
         cursor.execute("""
-            SELECT category_id, category_name
-            FROM categories
-            WHERE category_id = %s
-        """, (category_id,))
-        category = cursor.fetchone()
-    finally:
+            SELECT user_id, name, email, password, role
+            FROM users
+            WHERE email = %s AND password = %s
+        """, (email, password))
+
+        user = cursor.fetchone()
         cursor.close()
 
-    if not category:
-        flash("Category not found.", "danger")
-        return redirect(url_for("manage_categories"))
+        if user:
+            session.clear()
+            session["user_id"] = user[0]
+            session["name"] = user[1]
+            session["email"] = user[2]
+            session["role"] = user[4]
 
-    if request.method == "POST":
-        category_name = request.form.get(
-            "category_name", ""
-        ).strip()
+            if user[4] == "Admin":
+                return redirect(url_for("admin_dashboard"))
 
-        if not category_name:
-            flash("Category name is required.", "danger")
-            return redirect(
-                url_for("edit_category", category_id=category_id)
-            )
+            return redirect(url_for("user_dashboard"))
 
-        cursor = db.cursor()
+        flash("Invalid email or password", "danger")
+        return redirect(url_for("login"))
 
-        try:
-            cursor.execute("""
-                UPDATE categories
-                SET category_name = %s
-                WHERE category_id = %s
-            """, (category_name, category_id))
-            db.commit()
-            flash("Category updated successfully!", "success")
+    return render_template("login.html")
 
-        except mysql.connector.IntegrityError:
-            db.rollback()
-            flash("A category with this name already exists.", "danger")
-
-        finally:
-            cursor.close()
-
-        return redirect(url_for("manage_categories"))
-
-    return render_template(
-        "category_form.html",
-        category=category,
-        page_title="Edit Category"
-    )
-
-
-# Delete Category — block deletion if articles use it
-@app.route(
-    "/admin/categories/delete/<int:category_id>",
-    methods=["POST"]
-)
-@admin_required
-def delete_category(category_id):
-    cursor = db.cursor()
-
-    try:
-        cursor.execute("""
-            SELECT COUNT(*)
-            FROM articles
-            WHERE category_id = %s
-        """, (category_id,))
-        article_count = cursor.fetchone()[0]
-
-        if article_count > 0:
-            flash(
-                "This category is used by articles. "
-                "Reassign those articles before deleting it.",
-                "danger"
-            )
-            return redirect(url_for("manage_categories"))
-
-        cursor.execute("""
-            DELETE FROM categories
-            WHERE category_id = %s
-        """, (category_id,))
-
-        if cursor.rowcount == 0:
-            db.rollback()
-            flash("Category not found.", "danger")
-        else:
-            db.commit()
-            flash("Category deleted successfully!", "success")
-
-    except mysql.connector.Error:
-        db.rollback()
-        flash("Could not delete the category.", "danger")
-
-    finally:
-        cursor.close()
-
-    return redirect(url_for("manage_categories"))
 
 # Admin Dashboard
 @app.route("/admin_dashboard")
