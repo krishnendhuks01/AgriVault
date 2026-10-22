@@ -1,142 +1,464 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Government Policies - AgriVault</title>
+    <title>Government Policies | AgriVault</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --bg: #0b1711;
+            --surface: #12251a;
+            --card: #193426;
+            --green: #c5f36a;
+            --text: #f2f7f0;
+            --muted: #b1c2b5;
+            --border: #304b39;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background: #f4f8f3;
-            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(ellipse at top right, rgba(76, 125, 57, .15), transparent 40%),
+                var(--bg);
         }
+
         .navbar {
-            background: #2e7d32;
+            background: rgba(18, 37, 26, .96);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 0;
         }
+
         .navbar-brand {
-            color: white;
-            font-weight: bold;
+            color: var(--green) !important;
+            font-weight: 700;
+            font-size: 22px;
         }
+
+        .logout-btn {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 9px;
+            padding: 8px 15px;
+            font-size: .85rem;
+        }
+
+        .logout-btn:hover {
+            background: var(--green);
+            color: var(--bg);
+        }
+
+        .eyebrow {
+            color: var(--green);
+            font-size: .76rem;
+            font-weight: 600;
+            letter-spacing: 1.8px;
+        }
+
         .page-title {
-            color: #2e7d32;
-            font-weight: bold;
+            color: var(--text);
+            font-weight: 700;
+            letter-spacing: -.5px;
         }
+
+        .page-subtitle {
+            color: var(--muted);
+            font-size: .88rem;
+        }
+
+        .btn-add {
+            background: var(--green);
+            border: 1px solid var(--green);
+            color: var(--bg);
+            border-radius: 10px;
+            padding: 11px 17px;
+            font-weight: 600;
+            font-size: .86rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: .2s;
+        }
+
+        .btn-add:hover {
+            background: #d7ff91;
+            color: var(--bg);
+            transform: translateY(-1px);
+        }
+
         .policy-card {
+            background: linear-gradient(145deg, var(--surface), #102017);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .14);
+            transition: transform .25s ease, border-color .25s ease;
+        }
+
+        .policy-card:hover {
+            transform: translateY(-4px);
+            border-color: #668b47;
+        }
+
+        .policy-card .card-body {
+            padding: 24px;
+        }
+
+        .policy-icon {
+            width: 43px;
+            height: 43px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: rgba(197, 243, 106, .1);
+            border: 1px solid rgba(197, 243, 106, .2);
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+        }
+
+        .policy-title {
+            color: var(--text);
+            font-size: 1.06rem;
+            font-weight: 600;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .department {
+            color: var(--green);
+            font-size: .77rem;
+            font-weight: 500;
+        }
+
+        .policy-description {
+            color: var(--muted);
+            font-size: .84rem;
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+        }
+
+        .detail-label {
+            color: var(--green);
+            font-size: .8rem;
+            font-weight: 600;
+        }
+
+        .detail-text {
+            color: var(--muted);
+            font-size: .8rem;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+
+        .policy-divider {
+            border-color: var(--border);
+            opacity: 1;
+        }
+
+        .btn-official {
+            display: inline-block;
+            color: var(--green);
+            background: transparent;
+            border: 1px solid #668b47;
+            border-radius: 8px;
+            padding: 8px 12px;
+            text-decoration: none;
+            font-size: .78rem;
+            font-weight: 500;
+        }
+
+        .btn-official:hover {
+            background: rgba(197, 243, 106, .1);
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .btn-edit {
+            background: rgba(197, 243, 106, .1);
+            border: 1px solid #668b47;
+            color: var(--green);
+            border-radius: 8px;
+            padding: 7px 12px;
+            font-size: .78rem;
+        }
+
+        .btn-edit:hover {
+            background: var(--green);
+            border-color: var(--green);
+            color: var(--bg);
+        }
+
+        .btn-delete {
+            background: transparent;
+            border: 1px solid #874b4b;
+            color: #ff9c9c;
+            border-radius: 8px;
+            padding: 7px 12px;
+            font-size: .78rem;
+        }
+
+        .btn-delete:hover {
+            background: #a83232;
+            border-color: #a83232;
+            color: white;
+        }
+
+        .btn-back {
+            display: inline-block;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            background: transparent;
+            border-radius: 9px;
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: .84rem;
+        }
+
+        .btn-back:hover {
+            color: var(--green);
+            border-color: var(--green);
+        }
+
+        .empty-state {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            padding: 45px 20px;
+            text-align: center;
+        }
+
+        .empty-state h5 {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            color: var(--muted);
+            font-size: .87rem;
+        }
+
+        .empty-icon {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+        }
+
+        .alert {
             border: none;
-            border-radius: 14px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            border-radius: 10px;
+            font-size: .87rem;
+        }
+
+        .alert-success {
+            background: #1b3928;
+            color: var(--green);
+        }
+
+        .alert-danger,
+        .alert-error {
+            background: #3b2020;
+            color: #ffb3b3;
+        }
+
+        .alert-warning {
+            background: #3c3420;
+            color: #ffe19a;
+        }
+
+        .alert-info {
+            background: #1b3038;
+            color: #a8e5f5;
+        }
+
+        .btn-close {
+            filter: invert(1);
+        }
+
+        @media (max-width: 576px) {
+            .page-heading {
+                align-items: stretch !important;
+            }
+
+            .btn-add {
+                text-align: center;
+            }
+
+            .policy-card .card-body {
+                padding: 20px;
+            }
         }
     </style>
 </head>
+
 <body>
 
 <nav class="navbar navbar-dark">
     <div class="container">
         <a class="navbar-brand" href="{{ url_for('admin_dashboard') }}">
-            🌾 AgriVault
+            🌾 AgriVault <span class="text-light">Admin</span>
         </a>
-        <a href="{{ url_for('logout') }}" class="btn btn-light btn-sm">
-            Logout
+        <a href="{{ url_for('admin_dashboard') }}" class="btn logout-btn">
+        ← Back to Dashboard
+    </a>
+
+
+        <a href="{{ url_for('logout') }}" class="btn logout-btn">
+            Logout ↗
         </a>
     </div>
 </nav>
 
-<div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+<main class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 page-heading">
         <div>
-            <h2 class="page-title">Government Policies</h2>
-            <p class="text-muted mb-0">Manage agricultural schemes and policies.</p>
+            <p class="eyebrow mb-2">POLICY MANAGEMENT</p>
+
+            <h2 class="page-title mb-2">Government Policies</h2>
+
+            <p class="page-subtitle mb-0">
+                Manage agricultural schemes, government initiatives and farmer benefits.
+            </p>
         </div>
-        <a href="{{ url_for('add_policy') }}" class="btn btn-success">
+
+        <a href="{{ url_for('add_policy') }}" class="btn-add">
             + Add New Policy
         </a>
     </div>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% for category, message in messages %}
-            <div class="alert alert-{{ category }} alert-dismissible fade show">
+            <div class="alert alert-{{ category }} alert-dismissible fade show mb-3"
+                 role="alert">
                 {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% endfor %}
     {% endwith %}
 
     {% if policies %}
+
         <div class="row g-4">
+
             {% for policy in policies %}
+
                 <div class="col-md-6 col-lg-4">
+
                     <div class="card policy-card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title text-success">
+
+                        <div class="card-body d-flex flex-column">
+
+                            <div class="policy-icon">📋</div>
+
+                            <h5 class="policy-title mb-2">
                                 {{ policy.title }}
                             </h5>
 
-                            <p class="text-muted small mb-2">
-                                {{ policy.department or 'Department not specified' }}
+                            <p class="department mb-3">
+                                🏛️ {{ policy.department or 'Department not specified' }}
                             </p>
 
-                            <p class="card-text">
-                                {{ policy.description[:180] }}
-                                {% if policy.description|length > 180 %}...{% endif %}
+                            <p class="policy-description mb-3">
+                                {{ (policy.description or 'No description available.')[:180] }}
+                                {% if policy.description and policy.description|length > 180 %}...{% endif %}
                             </p>
 
                             {% if policy.eligibility %}
-                                <p><strong>Eligibility:</strong>
-                                    {{ policy.eligibility[:100] }}
-                                </p>
+                                <div class="mb-3">
+                                    <div class="detail-label mb-1">
+                                        Who can apply?
+                                    </div>
+                                    <div class="detail-text">
+                                        {{ policy.eligibility[:100] }}
+                                        {% if policy.eligibility|length > 100 %}...{% endif %}
+                                    </div>
+                                </div>
                             {% endif %}
 
                             {% if policy.benefits %}
-                                <p><strong>Benefits:</strong>
-                                    {{ policy.benefits[:100] }}
-                                </p>
+                                <div class="mb-3">
+                                    <div class="detail-label mb-1">
+                                        Farmer Benefits
+                                    </div>
+                                    <div class="detail-text">
+                                        {{ policy.benefits[:100] }}
+                                        {% if policy.benefits|length > 100 %}...{% endif %}
+                                    </div>
+                                </div>
                             {% endif %}
 
-                            {% if policy.official_url %}
-                                <a href="{{ policy.official_url }}"
-                                   target="_blank"
-                                   rel="noopener noreferrer"
-                                   class="btn btn-outline-success btn-sm">
-                                    Official Website
-                                </a>
-                            {% endif %}
-                            
-<div class="d-flex gap-2 mt-3">
-    <a href="{{ url_for('edit_policy', policy_id=policy.policy_id) }}"
-       class="btn btn-warning btn-sm">
-        ✏️ Edit
-    </a>
+                            <div class="mt-auto">
 
-    <form method="POST"
-          action="{{ url_for('delete_policy', policy_id=policy.policy_id) }}"
-          onsubmit="return confirm('Are you sure you want to delete this policy?');">
-        <button type="submit" class="btn btn-danger btn-sm">
-            🗑️ Delete
-        </button>
-    </form>
-</div>
+                                {% if policy.official_url %}
+                                    <a href="{{ policy.official_url }}"
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       class="btn-official">
+                                        ↗ Official Website
+                                    </a>
+                                {% endif %}
+
+                                <hr class="policy-divider mt-3 mb-3">
+
+                                <div class="d-flex flex-wrap gap-2">
+
+                                    <a href="{{ url_for('edit_policy', policy_id=policy.policy_id) }}"
+                                       class="btn btn-edit">
+                                        ✏️ Edit
+                                    </a>
+
+                                    <form method="POST"
+                                          action="{{ url_for('delete_policy', policy_id=policy.policy_id) }}"
+                                          onsubmit="return confirm('Are you sure you want to delete this policy?');"
+                                          class="m-0">
+
+                                        <button type="submit" class="btn btn-delete">
+                                            🗑️ Delete
+                                        </button>
+                                    </form>
+
+                                </div>
+
+                            </div>
 
                         </div>
                     </div>
+
                 </div>
+
             {% endfor %}
+
         </div>
+
     {% else %}
-        <div class="bg-white rounded-4 shadow-sm p-5 text-center">
-            <h5>No government policies added yet.</h5>
-            <p class="text-muted">Add your first agricultural scheme or policy.</p>
-            <a href="{{ url_for('add_policy') }}" class="btn btn-success">
-                Add Policy
+
+        <div class="empty-state">
+            <div class="empty-icon">🌱</div>
+
+            <h5>No Government Policies Yet</h5>
+
+            <p class="mb-4">
+                Add your first agricultural scheme or government policy to get started.
+            </p>
+
+            <a href="{{ url_for('add_policy') }}" class="btn-add">
+                + Add First Policy
             </a>
         </div>
+
     {% endif %}
 
-    <a href="{{ url_for('admin_dashboard') }}"
-       class="btn btn-outline-secondary mt-4">
-        ← Back to Dashboard
-    </a>
-</div>
+    
+</main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

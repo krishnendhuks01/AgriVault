@@ -3,248 +3,289 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>AgriVault | Agricultural Knowledge Repository</title>
 
     <!-- Bootstrap -->
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
 
     <!-- Google Font -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
 
+    <!-- Premium Dark Green Theme -->
     <style>
+        :root {
+            --bg: #0b1711;
+            --surface: #12251a;
+            --card: #193426;
+            --green: #c5f36a;
+            --text: #f2f7f0;
+            --muted: #b1c2b5;
+            --border: #304b39;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f8faf7;
-            color: #26352a;
+            background: var(--bg);
+            color: var(--text);
         }
 
         /* Navbar */
         .navbar {
-            background: #ffffff;
-            padding: 16px 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+            background: rgba(11, 33, 24, 0.97);
+            padding: 17px 0;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
         }
 
         .navbar-brand {
             font-size: 25px;
             font-weight: 700;
-            color: #2e7d32 !important;
+            color: var(--text) !important;
         }
 
         .navbar-brand span {
-            color: #8bc34a;
+            color: var(--green);
         }
 
         .nav-link {
-            color: #37483b !important;
+            color: var(--muted) !important;
             font-weight: 500;
-            margin-left: 18px;
+            margin-left: 15px;
+            transition: 0.25s;
         }
 
         .nav-link:hover {
-            color: #2e7d32 !important;
+            color: var(--green) !important;
+        }
+
+        .navbar-toggler {
+            border-color: var(--border);
+        }
+
+        .navbar-toggler-icon {
+            filter: invert(1);
         }
 
         .login-btn {
-            border: 1px solid #2e7d32;
-            color: #2e7d32 !important;
+            border: 1px solid #78916f;
+            color: var(--text) !important;
             padding: 8px 20px !important;
             border-radius: 25px;
         }
 
         .login-btn:hover {
-            background: #2e7d32;
-            color: white !important;
+            background: var(--card);
         }
 
         .register-btn {
-            background: #2e7d32;
-            color: white !important;
+            background: var(--green);
+            color: #122016 !important;
             padding: 9px 21px !important;
             border-radius: 25px;
         }
 
         .register-btn:hover {
-            background: #256628;
-            color: white !important;
+            background: #b3e65b;
+            color: #122016 !important;
         }
 
-        /* Hero Section */
+        /* Hero */
         .hero {
-            min-height: 570px;
+            min-height: 600px;
             display: flex;
             align-items: center;
+            position: relative;
+            overflow: hidden;
             background:
-                linear-gradient(
-                    90deg,
-                    rgba(247, 251, 246, 0.98) 0%,
-                    rgba(247, 251, 246, 0.92) 48%,
-                    rgba(247, 251, 246, 0.55) 100%
-                ),
-                linear-gradient(135deg, #e9f5e8, #f8faf7);
-            padding: 70px 0;
+                radial-gradient(ellipse at 85% 45%,
+                    rgba(91, 133, 62, 0.22), transparent 42%),
+                linear-gradient(135deg, #0b1711, #10291c 65%, #183523);
+            padding: 85px 0;
+        }
+
+        .hero::after {
+            content: "🌿";
+            position: absolute;
+            right: 7%;
+            bottom: 0;
+            font-size: clamp(120px, 23vw, 290px);
+            opacity: 0.10;
+            pointer-events: none;
         }
 
         .hero-content {
-            max-width: 650px;
+            max-width: 720px;
+            position: relative;
+            z-index: 1;
         }
 
         .hero-tag {
             display: inline-block;
-            background: #e3f2e1;
-            color: #2e7d32;
-            padding: 8px 18px;
+            background: rgba(197, 243, 106, 0.10);
+            color: var(--green);
+            border: 1px solid rgba(197, 243, 106, 0.28);
+            padding: 9px 17px;
             border-radius: 30px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .hero h1 {
-            font-size: 52px;
-            line-height: 1.2;
+            font-size: clamp(36px, 5vw, 61px);
+            line-height: 1.18;
             font-weight: 700;
-            color: #23442a;
-            margin-bottom: 20px;
+            color: var(--text);
+            margin-bottom: 23px;
+            letter-spacing: -1.4px;
         }
 
         .hero h1 span {
-            color: #4caf50;
+            color: var(--green);
         }
 
         .hero p {
-            font-size: 17px;
-            line-height: 1.8;
-            color: #607064;
-            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.9;
+            color: var(--muted);
+            max-width: 630px;
+            margin-bottom: 32px;
+        }
+
+        .hero-btn,
+        .secondary-btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 13px 27px;
+            border-radius: 10px;
+            font-weight: 600;
+            margin: 5px 8px 5px 0;
+            transition: 0.25s;
         }
 
         .hero-btn {
-            display: inline-block;
-            background: #2e7d32;
-            color: white;
-            text-decoration: none;
-            padding: 13px 28px;
-            border-radius: 30px;
-            font-weight: 600;
-            margin-right: 10px;
+            background: var(--green);
+            color: #122016;
         }
 
         .hero-btn:hover {
-            background: #256628;
-            color: white;
+            background: #b2e65b;
+            color: #122016;
+            transform: translateY(-2px);
         }
 
         .secondary-btn {
-            display: inline-block;
-            border: 1px solid #2e7d32;
-            color: #2e7d32;
-            text-decoration: none;
-            padding: 12px 27px;
-            border-radius: 30px;
-            font-weight: 600;
+            border: 1px solid #58745e;
+            color: var(--text);
         }
 
         .secondary-btn:hover {
-            background: #2e7d32;
-            color: white;
+            background: var(--card);
+            color: var(--green);
+            border-color: var(--green);
         }
 
         /* Features */
         .features {
-            padding: 75px 0;
-            background: white;
+            padding: 85px 0;
+            background: #0e1e15;
         }
 
         .section-title {
             text-align: center;
-            margin-bottom: 45px;
+            margin-bottom: 48px;
         }
 
         .section-title h2 {
-            font-size: 32px;
+            font-size: clamp(26px, 4vw, 36px);
             font-weight: 700;
-            color: #23442a;
+            color: var(--text);
         }
 
         .section-title p {
-            color: #718075;
-            margin-top: 10px;
+            color: var(--muted);
+            margin-top: 13px;
+            line-height: 1.8;
         }
 
         .feature-card {
-            background: #f8fbf7;
-            border: 1px solid #e5eee4;
+            background: linear-gradient(145deg, #193426, #12251a);
+            border: 1px solid var(--border);
             border-radius: 18px;
             padding: 30px;
             height: 100%;
-            transition: 0.3s;
+            transition: transform 0.3s, border-color 0.3s,
+                        box-shadow 0.3s;
         }
 
         .feature-card:hover {
-            transform: translateY(-7px);
-            box-shadow: 0 10px 25px rgba(46, 125, 50, 0.12);
+            transform: translateY(-6px);
+            border-color: #769b56;
+            box-shadow: 0 15px 32px rgba(0, 0, 0, 0.20);
         }
 
         .feature-icon {
-            width: 55px;
-            height: 55px;
+            width: 58px;
+            height: 58px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #e4f3e2;
+            background: rgba(197, 243, 106, 0.11);
+            border: 1px solid rgba(197, 243, 106, 0.15);
             border-radius: 15px;
             font-size: 27px;
-            margin-bottom: 20px;
+            margin-bottom: 23px;
         }
 
         .feature-card h4 {
-            font-size: 20px;
+            font-size: 19px;
             font-weight: 600;
-            color: #29472f;
-            margin-bottom: 12px;
+            color: var(--text);
+            margin-bottom: 13px;
         }
 
         .feature-card p {
-            color: #6b776d;
+            color: var(--muted);
             font-size: 14px;
-            line-height: 1.7;
+            line-height: 1.8;
+            margin-bottom: 0;
         }
 
-        /* About Section */
+        /* About */
         .about {
-            padding: 75px 0;
-            background: #eef7ed;
+            padding: 85px 0;
+            background: var(--bg);
         }
 
         .about-box {
-            background: white;
-            border-radius: 22px;
-            padding: 45px;
+            background: linear-gradient(135deg, #172f21, #102219);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: clamp(25px, 5vw, 52px);
         }
 
         .about h2 {
-            color: #23442a;
+            color: var(--text);
+            font-size: clamp(25px, 4vw, 35px);
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
 
         .about p {
-            color: #68746a;
-            line-height: 1.8;
+            color: var(--muted);
+            line-height: 1.9;
         }
 
         .about-list {
@@ -254,84 +295,120 @@
         }
 
         .about-list li {
-            margin-bottom: 13px;
-            color: #465449;
+            margin-bottom: 15px;
+            color: #d5e1d7;
         }
 
         .about-list li::before {
             content: "✓";
-            color: #2e7d32;
+            color: var(--green);
             font-weight: 700;
-            margin-right: 10px;
+            margin-right: 12px;
         }
 
-        /* CTA */
+        .about-box .col-lg-5 div {
+            filter: drop-shadow(0 12px 25px rgba(197, 243, 106, 0.10));
+        }
+
+        /* Call to Action */
         .cta {
-            padding: 70px 0;
-            background: #2e7d32;
+            padding: 75px 0;
+            background:
+                radial-gradient(ellipse at top right,
+                    rgba(197, 243, 106, 0.13), transparent 50%),
+                #142c1e;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
             text-align: center;
-            color: white;
+            color: var(--text);
         }
 
         .cta h2 {
+            color: var(--text);
             font-weight: 700;
-            margin-bottom: 15px;
+            margin-bottom: 17px;
         }
 
         .cta p {
-            opacity: 0.9;
-            margin-bottom: 25px;
+            color: var(--muted);
+            margin-bottom: 27px;
         }
 
         .cta-btn {
             display: inline-block;
-            background: white;
-            color: #2e7d32;
+            background: var(--green);
+            color: #122016;
             text-decoration: none;
-            padding: 12px 28px;
-            border-radius: 30px;
+            padding: 13px 28px;
+            border-radius: 10px;
             font-weight: 600;
+            transition: 0.25s;
         }
 
         .cta-btn:hover {
-            background: #f1f1f1;
-            color: #256628;
+            background: #b2e65b;
+            color: #122016;
+            transform: translateY(-2px);
         }
 
         /* Footer */
         footer {
-            background: #1f3023;
-            color: #d6ded7;
-            padding: 25px 0;
+            background: #08130d;
+            color: var(--muted);
+            padding: 27px 0;
             text-align: center;
-            font-size: 14px;
+            font-size: 13px;
+            border-top: 1px solid var(--border);
+        }
+
+        footer p {
+            color: var(--muted);
         }
 
         footer strong {
-            color: white;
+            color: var(--green);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
             .hero {
+                min-height: auto;
                 text-align: center;
-                min-height: 500px;
+                padding: 75px 0;
+            }
+
+            .hero-content {
+                margin: auto;
             }
 
             .hero h1 {
-                font-size: 38px;
+                letter-spacing: -0.5px;
             }
 
             .hero p {
-                font-size: 15px;
+                font-size: 14px;
+                margin-left: auto;
+                margin-right: auto;
             }
 
             .nav-link {
-                margin-left: 0;
+                margin: 5px 0;
+            }
+
+            .login-btn,
+            .register-btn {
+                display: inline-block;
+                text-align: center;
+                margin-top: 5px;
             }
 
             .about-box {
-                padding: 30px;
+                padding: 25px;
+            }
+
+            .features,
+            .about {
+                padding: 60px 0;
             }
         }
     </style>
@@ -347,17 +424,16 @@
                 Agri<span>Vault</span> 🌾
             </a>
 
-            <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarNav"
-            >
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-
                 <ul class="navbar-nav ms-auto align-items-lg-center">
 
                     <li class="nav-item">
@@ -373,29 +449,21 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link login-btn" href="/login">
-                            Login
-                        </a>
+                        <a class="nav-link login-btn" href="/login">Login</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link register-btn" href="/register">
-                            Register
-                        </a>
+                        <a class="nav-link register-btn" href="/register">Register</a>
                     </li>
 
                 </ul>
-
             </div>
         </div>
     </nav>
 
-
     <!-- Hero Section -->
     <section class="hero">
-
         <div class="container">
-
             <div class="hero-content">
 
                 <div class="hero-tag">
@@ -414,24 +482,15 @@
                     and government policies.
                 </p>
 
-                <a href="/register" class="hero-btn">
-                    Get Started →
-                </a>
-
-                <a href="#features" class="secondary-btn">
-                    Explore
-                </a>
+                <a href="/register" class="hero-btn">Get Started →</a>
+                <a href="#features" class="secondary-btn">Explore</a>
 
             </div>
-
         </div>
-
     </section>
-
 
     <!-- Features Section -->
     <section class="features" id="features">
-
         <div class="container">
 
             <div class="section-title">
@@ -445,96 +504,60 @@
 
                 <div class="col-md-6 col-lg-3">
                     <div class="feature-card">
-
-                        <div class="feature-icon">
-                            🌾
-                        </div>
-
+                        <div class="feature-icon">🌾</div>
                         <h4>Crop Knowledge</h4>
-
                         <p>
                             Access useful information about different crops,
                             cultivation methods and farming practices.
                         </p>
-
                     </div>
                 </div>
 
-
                 <div class="col-md-6 col-lg-3">
                     <div class="feature-card">
-
-                        <div class="feature-icon">
-                            🐛
-                        </div>
-
+                        <div class="feature-icon">🐛</div>
                         <h4>Pest Management</h4>
-
                         <p>
                             Explore information about common agricultural
                             pests, diseases and their management methods.
                         </p>
-
                     </div>
                 </div>
 
-
                 <div class="col-md-6 col-lg-3">
                     <div class="feature-card">
-
-                        <div class="feature-icon">
-                            🏛️
-                        </div>
-
+                        <div class="feature-icon">🏛️</div>
                         <h4>Government Policies</h4>
-
                         <p>
                             Find agricultural schemes, policies and other
                             government-related information.
                         </p>
-
                     </div>
                 </div>
 
-
                 <div class="col-md-6 col-lg-3">
                     <div class="feature-card">
-
-                        <div class="feature-icon">
-                            🤖
-                        </div>
-
+                        <div class="feature-icon">🤖</div>
                         <h4>Smart Query</h4>
-
                         <p>
-                            Ask agricultural questions naturally and get
+                            Ask agricultural questions and get
                             relevant information from the knowledge repository.
                         </p>
-
                     </div>
                 </div>
 
             </div>
-
         </div>
-
     </section>
-
 
     <!-- About Section -->
     <section class="about" id="about">
-
         <div class="container">
-
             <div class="about-box">
-
                 <div class="row align-items-center">
 
                     <div class="col-lg-7">
-
-                        <h2>
-                            Knowledge for Better Agriculture 🌱
-                        </h2>
+                        <h2>Knowledge for Better Agriculture 🌱</h2>
 
                         <p>
                             AgriVault brings agricultural information together
@@ -545,93 +568,50 @@
                         </p>
 
                         <ul class="about-list">
-
-                            <li>
-                                Organized agricultural knowledge
-                            </li>
-
-                            <li>
-                                Crop and farming information
-                            </li>
-
-                            <li>
-                                Pest and disease management
-                            </li>
-
-                            <li>
-                                Government schemes and policies
-                            </li>
-
-                            <li>
-                                NLP-based agricultural query answering
-                            </li>
-
+                            <li>Organized agricultural knowledge</li>
+                            <li>Crop and farming information</li>
+                            <li>Pest and disease management</li>
+                            <li>Government schemes and policies</li>
+                            <li>NLP-based agricultural query answering</li>
                         </ul>
-
                     </div>
 
                     <div class="col-lg-5 text-center">
-
-                        <div style="
-                            font-size: 130px;
-                            padding: 20px;
-                        ">
+                        <div style="font-size: 130px; padding: 20px;">
                             🌾
                         </div>
-
                     </div>
 
                 </div>
-
             </div>
-
         </div>
-
     </section>
 
-
-    <!-- Call To Action -->
+    <!-- Call to Action -->
     <section class="cta">
-
         <div class="container">
-
-            <h2>
-                Explore Agricultural Knowledge
-            </h2>
+            <h2>Explore Agricultural Knowledge</h2>
 
             <p>
                 Start discovering useful agricultural information with AgriVault.
             </p>
 
-            <a href="/register" class="cta-btn">
-                Create Your Account
-            </a>
-
+            <a href="/register" class="cta-btn">Create Your Account</a>
         </div>
-
     </section>
-
 
     <!-- Footer -->
     <footer>
-
         <div class="container">
-
             <p class="mb-0">
                 © 2026 <strong>AgriVault</strong>.
                 Agricultural Knowledge and Policy Repository.
             </p>
-
         </div>
-
     </footer>
 
-
     <!-- Bootstrap JavaScript -->
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
-```

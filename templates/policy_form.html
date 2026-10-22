@@ -1,39 +1,236 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Government Policy - AgriVault</title>
+    <title>{{ 'Edit' if policy else 'Add' }} Government Policy | AgriVault</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --bg: #0b1711;
+            --surface: #12251a;
+            --card: #193426;
+            --green: #c5f36a;
+            --text: #f2f7f0;
+            --muted: #b1c2b5;
+            --border: #304b39;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background: #f4f8f3;
-            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(ellipse at top right, rgba(76, 125, 57, .15), transparent 40%),
+                var(--bg);
         }
 
         .navbar {
-            background: #2e7d32;
+            background: rgba(18, 37, 26, .96);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 0;
         }
 
         .navbar-brand {
-            color: white;
-            font-weight: bold;
+            color: var(--green) !important;
+            font-weight: 700;
+            font-size: 22px;
+        }
+
+        .logout-btn {
+            color: var(--text);
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: 8px 15px;
+            font-size: .84rem;
+        }
+
+        .logout-btn:hover {
+            background: var(--green);
+            color: var(--bg);
         }
 
         .form-card {
             max-width: 800px;
-            margin: 35px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 18px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin: 40px auto;
+            padding: 35px;
+            background: linear-gradient(145deg, var(--surface), #102017);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, .2);
         }
 
-        h2 {
-            color: #2e7d32;
-            font-weight: bold;
+        .eyebrow {
+            color: var(--green);
+            font-size: .75rem;
+            font-weight: 600;
+            letter-spacing: 1.8px;
+        }
+
+        .form-heading {
+            color: var(--text);
+            font-weight: 700;
+            letter-spacing: -.5px;
+        }
+
+        .form-subtitle {
+            color: var(--muted);
+            font-size: .88rem;
+            line-height: 1.7;
+        }
+
+        .form-label {
+            color: var(--text);
+            font-size: .85rem;
+            font-weight: 500;
+            margin-bottom: 9px;
+        }
+
+        .required-star {
+            color: var(--green);
+        }
+
+        .form-control {
+            color: var(--text);
+            background: #0d1c13;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-family: 'Poppins', sans-serif;
+            font-size: .85rem;
+        }
+
+        .form-control:focus {
+            color: var(--text);
+            background: #0d1c13;
+            border-color: var(--green);
+            box-shadow: 0 0 0 .2rem rgba(197, 243, 106, .1);
+        }
+
+        .form-control::placeholder {
+            color: #829589;
+            opacity: 1;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 95px;
+            line-height: 1.7;
+        }
+
+        .form-text {
+            color: var(--muted);
+            font-size: .74rem;
+        }
+
+        .section-label {
+            color: var(--green);
+            font-size: .77rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .form-divider {
+            border-color: var(--border);
+            opacity: 1;
+            margin: 27px 0;
+        }
+
+        .btn-save {
+            background: var(--green);
+            color: var(--bg);
+            border: 1px solid var(--green);
+            border-radius: 9px;
+            padding: 11px 20px;
+            font-size: .85rem;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+        .btn-save:hover {
+            background: #d7ff91;
+            color: var(--bg);
+            border-color: #d7ff91;
+            transform: translateY(-1px);
+        }
+
+        .btn-cancel {
+            color: var(--muted);
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: 11px 20px;
+            font-size: .85rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-cancel:hover {
+            color: var(--green);
+            border-color: var(--green);
+        }
+
+        .alert {
+            border: none;
+            border-radius: 10px;
+            font-size: .85rem;
+        }
+
+        .alert-success {
+            background: #1b3928;
+            color: var(--green);
+        }
+
+        .alert-danger,
+        .alert-error {
+            background: #3b2020;
+            color: #ffb3b3;
+        }
+
+        .alert-warning {
+            background: #3c3420;
+            color: #ffe19a;
+        }
+
+        .alert-info {
+            background: #1b3038;
+            color: #a8e5f5;
+        }
+
+        .btn-close {
+            filter: invert(1);
+        }
+
+        @media (max-width: 576px) {
+            .form-card {
+                margin: 22px auto;
+                padding: 23px 18px;
+                border-radius: 15px;
+            }
+
+            .form-heading {
+                font-size: 1.45rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .form-actions .btn,
+            .form-actions a {
+                width: 100%;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -43,100 +240,161 @@
 <nav class="navbar navbar-dark">
     <div class="container">
         <a class="navbar-brand" href="{{ url_for('admin_dashboard') }}">
-            🌾 AgriVault
+            🌾 AgriVault <span class="text-light">Admin</span>
         </a>
-        <a href="{{ url_for('logout') }}" class="btn btn-light btn-sm">
-            Logout
+        <a href="/admin/policies" class="btn logout-btn">
+            ← Back
+        </a>
+
+        <a href="{{ url_for('logout') }}" class="btn logout-btn">
+            Logout ↗
         </a>
     </div>
 </nav>
 
-<div class="container">
+<main class="container">
+
     <div class="form-card">
 
-        <h2 class="text-center mb-2">🌱 Add Government Policy</h2>
-        <p class="text-center text-muted mb-4">
-            Enter agricultural scheme and policy details
-        </p>
+        <div class="text-center mb-4">
+            <p class="eyebrow mb-2">POLICY MANAGEMENT</p>
+
+            <h2 class="form-heading mb-2">
+                {{ '✏️ Edit Government Policy' if policy else '🌱 Add Government Policy' }}
+            </h2>
+
+            <p class="form-subtitle mb-0">
+                {{ 'Update the agricultural scheme and its details.' if policy else 'Enter the details of an agricultural scheme or government policy.' }}
+            </p>
+        </div>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">
+                <div class="alert alert-{{ category }} alert-dismissible fade show mb-3"
+                     role="alert">
                     {{ message }}
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             {% endfor %}
         {% endwith %}
 
-        
-<form method="POST"
-      action="{{ url_for('edit_policy', policy_id=policy.policy_id) if policy else url_for('add_policy') }}">
+        <form method="POST"
+              action="{{ url_for('edit_policy', policy_id=policy.policy_id) if policy else url_for('add_policy') }}">
 
+            <p class="section-label">01 — Basic Information</p>
 
-            <div class="mb-3">
-                <label class="form-label">Policy / Scheme Name *</label>
-                
-<input type="text" name="title" class="form-control"
-       value="{{ policy.title if policy else '' }}"
-       maxlength="255" required>
+            <div class="mb-4">
+                <label for="title" class="form-label">
+                    Policy / Scheme Name <span class="required-star">*</span>
+                </label>
 
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Description *</label>
-                
-<textarea name="description" class="form-control"
-          rows="4" required>{{ policy.description if policy else '' }}</textarea>
-
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Department</label>
-                
-<input type="text" name="department" class="form-control"
-       value="{{ policy.department if policy else '' }}"
-       placeholder="e.g. Ministry of Agriculture">
-
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Eligibility</label>
-                
-<textarea name="eligibility" class="form-control"
-          rows="3" placeholder="Who can apply?">{{ policy.eligibility if policy else '' }}</textarea>
-
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Benefits</label>
-                
-<textarea name="benefits" class="form-control"
-          rows="3" placeholder="What benefits are provided?">{{ policy.benefits if policy else '' }}</textarea>
-
+                <input type="text"
+                       id="title"
+                       name="title"
+                       class="form-control"
+                       value="{{ policy.title if policy else '' }}"
+                       maxlength="255"
+                       placeholder="Enter the policy or scheme name"
+                       required>
             </div>
 
             <div class="mb-4">
-                <label class="form-label">Official Website URL</label>
-                
-<input type="url" name="official_url" class="form-control"
-       value="{{ policy.official_url if policy else '' }}"
-       placeholder="https://example.gov.in">
+                <label for="description" class="form-label">
+                    Description <span class="required-star">*</span>
+                </label>
 
+                <textarea id="description"
+                          name="description"
+                          class="form-control"
+                          rows="4"
+                          placeholder="Describe the scheme and its purpose"
+                          required>{{ policy.description if policy else '' }}</textarea>
             </div>
 
-            <div class="d-flex gap-2 flex-wrap">
-                <button type="submit" class="btn btn-success">
-                    Save Policy
+            <div class="mb-4">
+                <label for="department" class="form-label">
+                    Department
+                </label>
+
+                <input type="text"
+                       id="department"
+                       name="department"
+                       class="form-control"
+                       value="{{ policy.department if policy else '' }}"
+                       placeholder="e.g. Ministry of Agriculture">
+            </div>
+
+            <hr class="form-divider">
+
+            <p class="section-label">02 — Farmer Information</p>
+
+            <div class="mb-4">
+                <label for="eligibility" class="form-label">
+                    Eligibility Criteria
+                </label>
+
+                <textarea id="eligibility"
+                          name="eligibility"
+                          class="form-control"
+                          rows="3"
+                          placeholder="Who can apply for this scheme?">{{ policy.eligibility if policy else '' }}</textarea>
+
+                <div class="form-text mt-2">
+                    Mention eligible farmers, required conditions or applicant categories.
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label for="benefits" class="form-label">
+                    Benefits
+                </label>
+
+                <textarea id="benefits"
+                          name="benefits"
+                          class="form-control"
+                          rows="3"
+                          placeholder="What benefits or assistance are provided?">{{ policy.benefits if policy else '' }}</textarea>
+            </div>
+
+            <hr class="form-divider">
+
+            <p class="section-label">03 — Official Reference</p>
+
+            <div class="mb-4">
+                <label for="official_url" class="form-label">
+                    Official Website URL
+                </label>
+
+                <input type="url"
+                       id="official_url"
+                       name="official_url"
+                       class="form-control"
+                       value="{{ policy.official_url if policy else '' }}"
+                       placeholder="https://example.gov.in">
+
+                <div class="form-text mt-2">
+                    Add the official government website for more information.
+                </div>
+            </div>
+
+            <hr class="form-divider">
+
+            <div class="d-flex gap-3 flex-wrap form-actions">
+                <button type="submit" class="btn btn-save">
+                    {{ 'Save Changes' if policy else 'Save Policy' }}
                 </button>
 
-                <a href="{{ url_for('manage_policies') }}"
-                   class="btn btn-outline-secondary">
+                <a href="{{ url_for('manage_policies') }}" class="btn-cancel">
                     Cancel
                 </a>
             </div>
 
         </form>
     </div>
-</div>
 
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

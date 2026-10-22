@@ -115,6 +115,48 @@ def register():
     return render_template("register.html")
 
 
+
+
+# Login
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "")
+
+        cursor = db.cursor()
+
+        try:
+            cursor.execute("""
+                SELECT user_id, name, email, password, role
+                FROM users
+                WHERE email = %s AND password = %s
+            """, (email, password))
+
+            user = cursor.fetchone()
+
+        finally:
+            cursor.close()
+
+        if user:
+            session.clear()
+            session["user_id"] = user[0]
+            session["name"] = user[1]
+            session["email"] = user[2]
+            session["role"] = user[4]
+
+            if user[4] == "Admin":
+                return redirect(url_for("admin_dashboard"))
+
+            return redirect(url_for("user_dashboard"))
+
+        flash("Invalid email or password", "danger")
+        return redirect(url_for("login"))
+
+    return render_template("login.html")
+
+
+
 # User Dashboard
 @app.route("/user_dashboard")
 def user_dashboard():
@@ -126,16 +168,16 @@ def user_dashboard():
 # NLP / Article Query
 
 
+
+
+
+
 @app.route("/query", methods=["GET", "POST"])
 def query():
     if request.method == "GET":
         return render_template("query.html")
 
-    from sklearn.feature_extraction.text import TfidfVectorizer
-    from sklearn.metrics.pairwise import cosine_similarity
-
     question = request.form.get("question", "").strip()
-    print("QUERY POST RECEIVED:", request.method, request.form)
 
     if not question:
         return render_template(
@@ -159,9 +201,11 @@ def query():
             FROM government_policies
         """)
         policies = cursor.fetchall()
+
     finally:
         cursor.close()
 
+    # Build article and policy records
     documents = []
 
     for article in articles:
@@ -174,7 +218,8 @@ def query():
         documents.append({
             "type": "article",
             "data": article,
-            "text": searchable_text
+            "text": searchable_text,
+            "keywords": str(article.get("keywords") or "").lower()
         })
 
     for policy in policies:
@@ -189,92 +234,96 @@ def query():
         documents.append({
             "type": "policy",
             "data": policy,
-            "text": searchable_text
+            "text": searchable_text,
+            "keywords": searchable_text.lower()
         })
 
-    if not documents:
+    # Extract search keywords
+    stop_words = {
+        "a", "an", "the", "is", "are", "was", "were",
+        "what", "how", "why", "when", "where", "which",
+        "and", "or", "of", "in", "on", "for", "to",
+        "with", "about", "me", "tell", "explain", "please"
+    }
+
+    
+    import re
+
+    query_words = {
+    word.lower()
+    for word in re.split(r"[\s,]+", question.strip())
+    if word.strip()
+} - stop_words
+
+
+    query_words.discard("")
+
+    if not query_words:
         return render_template(
             "query.html",
             question=question,
-            error="No agricultural articles or government policies are available yet."
+            error="Please enter specific agricultural keywords."
         )
 
-    texts = [item["text"] for item in documents]
-    texts.append(question)
+    # Match articles using ONLY their keywords column.
+    # Match policies using their available descriptive fields.
+    matched_documents = []
 
-    vectorizer = TfidfVectorizer(
-        lowercase=True,
-        stop_words="english",
-        ngram_range=(1, 2),
-        sublinear_tf=True
-    )
+    for document in documents:
+        searchable_keywords = document["keywords"]
+
+        if any(
+            word in searchable_keywords
+            for word in query_words
+        ):
+            matched_documents.append(document)
+
+    if not matched_documents:
+        return render_template(
+            "query.html",
+            question=question,
+            error="No articles or policies match your search keywords.",
+            results=[]
+        )
+
+    # Rank matching results using TF-IDF
+    texts = [item["text"] for item in matched_documents]
 
     try:
-        tfidf_matrix = vectorizer.fit_transform(texts)
-        similarities = cosine_similarity(
-            tfidf_matrix[-1],
-            tfidf_matrix[:-1]
-        ).flatten()
-    except ValueError:
-        similarities = []
-
-    if len(similarities) == 0:
-        best_index = -1
-        best_score = 0
-    else:
-        best_index = int(similarities.argmax())
-        best_score = float(similarities[best_index])
-
-    if best_index == -1 or best_score < 0.05:
-        return render_template(
-            "query.html",
-            question=question,
-            error="No relevant information found. Try different keywords or ask a more specific question."
+        vectorizer = TfidfVectorizer(
+            lowercase=True,
+            stop_words="english",
+            ngram_range=(1, 2),
+            sublinear_tf=True
         )
 
-    result = documents[best_index]
+        document_matrix = vectorizer.fit_transform(
+            texts + [question]
+        )
+
+        similarities = cosine_similarity(
+            document_matrix[-1],
+            document_matrix[:-1]
+        ).flatten()
+
+    except ValueError:
+        similarities = [0.0] * len(matched_documents)
+
+    for index, document in enumerate(matched_documents):
+        document["similarity_score"] = float(similarities[index])
+
+    matched_documents.sort(
+        key=lambda item: item["similarity_score"],
+        reverse=True
+    )
 
     return render_template(
         "query.html",
         question=question,
-        result=result["data"],
-        result_type=result["type"],
-        similarity_score=round(best_score * 100, 1)
+        results=matched_documents
     )
 
-# Login
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        email = request.form["email"]
-        password = request.form["password"]
 
-        cursor = db.cursor()
-        cursor.execute("""
-            SELECT user_id, name, email, password, role
-            FROM users
-            WHERE email = %s AND password = %s
-        """, (email, password))
-
-        user = cursor.fetchone()
-        cursor.close()
-
-        if user:
-            session.clear()
-            session["user_id"] = user[0]
-            session["name"] = user[1]
-            session["email"] = user[2]
-            session["role"] = user[4]
-
-            if user[4] == "Admin":
-                return redirect(url_for("admin_dashboard"))
-
-            return redirect(url_for("user_dashboard"))
-
-        flash("Invalid email or password", "danger")
-        return redirect(url_for("login"))
-
-    return render_template("login.html")
 
 
 # Admin Dashboard

@@ -1,112 +1,378 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Smart Query - AgriVault</title>
+    <title>Smart Query | AgriVault</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
 
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #f4f8f3;
+        :root {
+            --bg: #0b1711;
+            --surface: #12251a;
+            --card: #193426;
+            --green: #c5f36a;
+            --text: #f2f7f0;
+            --muted: #b1c2b5;
+            --border: #304b39;
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(ellipse at top right,
+                    rgba(91, 133, 64, 0.13), transparent 40%),
+                var(--bg);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Navbar */
         .navbar {
-            background: #2e7d32;
+            background: rgba(11, 23, 17, 0.96);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
         }
 
         .navbar-brand {
-            color: white !important;
-            font-weight: 700;
+            color: var(--green) !important;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
         }
 
         .back {
-            color: white;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 500;
             text-decoration: none;
+            transition: color 0.2s;
         }
 
+        .back:hover {
+            color: var(--green);
+        }
+
+        /* Main query container */
         .query-box {
-            max-width: 750px;
-            margin: 70px auto;
-            background: white;
-            padding: 40px;
+            max-width: 900px;
+            margin: 45px auto;
+            padding: 38px;
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            background: linear-gradient(145deg, #14291d, #102117);
+            box-shadow: 0 22px 55px rgba(0, 0, 0, 0.2);
+        }
+
+        .query-icon {
+            width: 65px;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            border: 1px solid rgba(197, 243, 106, 0.25);
             border-radius: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            background: rgba(197, 243, 106, 0.09);
+            font-size: 30px;
+        }
+
+        .eyebrow {
+            color: var(--green);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
         }
 
         .title {
-            text-align: center;
-            color: #2e7d32;
-            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text);
+            font-size: clamp(25px, 4vw, 34px);
+            font-weight: 800;
+            letter-spacing: -0.8px;
+        }
+
+        .title span {
+            color: var(--green);
         }
 
         .subtitle {
-            text-align: center;
-            color: #777;
-            margin-bottom: 30px;
+            max-width: 600px;
+            margin: 0 auto 32px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.8;
         }
 
-        textarea {
-            resize: none;
+        /* Form */
+        .form-label {
+            margin-bottom: 10px;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        textarea.form-control {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+        .form-control {
+            padding: 15px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #0b1b12;
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .form-control::placeholder {
+            color: #758a79;
+        }
+
+        .form-control:focus {
+            border-color: var(--green);
+            background: #0b1b12;
+            color: var(--text);
+            box-shadow: 0 0 0 3px rgba(197, 243, 106, 0.1);
         }
 
         .btn-query {
-            background: #2e7d32;
-            color: white;
             width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            margin-top: 15px;
+            margin-top: 16px;
+            padding: 14px 18px;
+            border: 1px solid var(--green);
+            border-radius: 12px;
+            background: var(--green);
+            color: #14210e;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            text-align: center;
+            transition: 0.2s;
         }
 
         .btn-query:hover {
-            background: #256628;
-            color: white;
+            border-color: #d7ff91;
+            background: #d7ff91;
+            color: #14210e;
+            transform: translateY(-1px);
         }
 
-        .answer-box {
-            background: #f8fbf6;
-            border: 1px solid #dcebd9;
-            border-radius: 14px;
-            padding: 24px;
-            margin-top: 28px;
+        .query-hint {
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        /* Messages */
+        .alert {
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .alert-warning {
+            border: 1px solid #735d2c;
+            background: #2b2617;
+            color: #f5d993;
+        }
+
+        .alert-success {
+            border: 1px solid rgba(197, 243, 106, 0.25);
+            background: rgba(197, 243, 106, 0.08);
+            color: var(--green);
+        }
+
+        /* Results heading */
+        .results-heading {
+            margin-top: 38px;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .results-heading span {
+            color: var(--green);
+        }
+
+        .question-summary {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.8;
             overflow-wrap: anywhere;
         }
 
-        .answer-title {
-            color: #2e7d32;
-            font-weight: 700;
+        /* Individual result cards */
+        .result-card {
+            margin-top: 20px;
+            padding: 25px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            background: linear-gradient(145deg, #193426, #13281c);
+            overflow-wrap: anywhere;
+            transition: border-color 0.2s, transform 0.2s;
         }
 
-        .answer-content {
-            line-height: 1.8;
-            white-space: pre-line;
+        .result-card:hover {
+            border-color: rgba(197, 243, 106, 0.4);
+            transform: translateY(-2px);
         }
 
         .result-label {
             display: inline-block;
-            background: #e2f2df;
-            color: #256628;
-            padding: 6px 12px;
-            border-radius: 20px;
+            margin-bottom: 14px;
+            padding: 7px 12px;
+            border: 1px solid rgba(197, 243, 106, 0.22);
+            border-radius: 8px;
+            background: rgba(197, 243, 106, 0.08);
+            color: var(--green);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+        }
+
+        .result-title {
+            margin-bottom: 14px;
+            color: var(--text);
+            font-size: 19px;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+
+        .detail-heading {
+            margin-top: 20px;
+            margin-bottom: 8px;
+            color: var(--green);
             font-size: 13px;
-            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .answer-content {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.9;
+            white-space: pre-line;
+            overflow-wrap: anywhere;
+        }
+
+        .department-text {
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .department-text strong {
+            color: var(--text);
+        }
+
+        .result-image {
+            display: block;
+            width: auto;
+            max-width: 100%;
+            max-height: 320px;
+            margin-top: 18px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #0b1711;
+            object-fit: contain;
+        }
+
+        .btn-outline-result {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: #10251a;
+            color: var(--green);
+            font-size: 11px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .btn-outline-result:hover {
+            border-color: var(--green);
+            background: rgba(197, 243, 106, 0.1);
+            color: var(--green);
+        }
+
+        .match-score {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 7px 11px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: rgba(11, 23, 17, 0.55);
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .match-score strong {
+            color: var(--green);
+        }
+
+        .another-query {
+            display: block;
+            width: 100%;
+            margin-top: 25px;
+        }
+
+        footer {
+            padding: 24px 15px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 11px;
+            text-align: center;
+        }
+
+        footer span {
+            color: var(--green);
+            font-weight: 600;
         }
 
         @media (max-width: 576px) {
-            .query-box {
-                margin: 30px auto;
-                padding: 24px 18px;
+            .navbar-brand {
+                font-size: 21px;
             }
 
-            .answer-box {
-                padding: 18px;
+            .query-box {
+                margin: 25px auto;
+                padding: 25px 17px;
+                border-radius: 17px;
+            }
+
+            .subtitle {
+                margin-bottom: 25px;
+            }
+
+            .result-card {
+                padding: 19px;
+            }
+
+            .result-title {
+                font-size: 17px;
             }
         }
     </style>
@@ -115,9 +381,9 @@
 <body>
 
 <nav class="navbar">
-    <div class="container">
+    <div class="container d-flex align-items-center justify-content-between">
         <a class="navbar-brand" href="/user_dashboard">
-            🌾 AgriVault
+            🌿 AgriVault
         </a>
 
         <a href="/user_dashboard" class="back">
@@ -126,139 +392,185 @@
     </div>
 </nav>
 
-<div class="container">
+<main class="container">
+
     <div class="query-box">
 
-        <h2 class="title">🤖 Smart Agricultural Query</h2>
+        <div class="text-center">
+            <div class="query-icon">🤖</div>
 
-        <p class="subtitle">
-            Ask your agricultural question in natural language
-        </p>
+            
+
+            <h1 class="title">
+                Smart <span>Agricultural Query</span>
+            </h1>
+
+            <p class="subtitle">
+                Ask an agricultural question and discover relevant farming
+                articles, crop management guidance, and government policies.
+            </p>
+        </div>
 
         <form method="POST" action="/query">
-
             <div class="mb-3">
-                <label class="form-label">Your Question</label>
+                <label for="question" class="form-label">
+                    Your Question
+                </label>
 
                 <textarea
+                    id="question"
                     name="question"
                     class="form-control"
-                    rows="5"
+                    rows="4"
                     placeholder="Example: How can I control pests in tomato plants?"
                     required>{{ question or '' }}</textarea>
+
+                <p class="query-hint">
+                    💡 Tip: Describe your crop, plant disease, pest, or farming
+                    problem clearly to find more relevant information.
+                </p>
             </div>
 
             <button type="submit" class="btn-query">
-                🔍 Find Answer
+                🔍 Find Agricultural Information
             </button>
-
         </form>
 
         {% if error %}
             <div class="alert alert-warning mt-4 mb-0">
-                <strong>🌱 AgriVault</strong>
+                <strong>🌱 Search message</strong>
                 <p class="mb-0 mt-2">{{ error }}</p>
             </div>
         {% endif %}
 
-        {% if result %}
-            <div class="answer-box">
+        {% if results is defined and results %}
+            <div class="mt-4">
 
-                <h4 class="answer-title mb-3">
-                    🌿 Agricultural Information
-                </h4>
+                <h2 class="results-heading">
+                    🌿 Agricultural <span>Information</span>
+                </h2>
 
-                <p class="text-muted">
+                <p class="question-summary mt-3">
                     <strong>Your question:</strong> {{ question }}
                 </p>
 
-                {% if result_type == 'article' %}
+                <p class="question-summary">
+                    Results are ordered by their relevance to your question.
+                </p>
 
-                    <span class="result-label">
-                        📚 Agricultural Article
-                    </span>
+                <div class="alert alert-success mt-3">
+                    ✓ Found {{ results|length }} result(s).
+                </div>
 
-                    <h5 class="fw-bold">{{ result.title }}</h5>
+                {% for item in results %}
+                    {% set data = item.data %}
 
-                    <div class="answer-content mt-3">{{ result.content or 'No article content available.' }}</div>
+                    <div class="result-card">
 
-                    {% if result.image_path %}
-                        <img
-                            src="{{ url_for('static', filename=result.image_path | replace('static/', '', 1)) }}"
-                            alt="Article image"
-                            class="img-fluid rounded mt-3">
-                    {% endif %}
+                        {% if item.type == 'article' %}
 
-                    {% if result.pdf_path %}
-                        <p class="mt-3">
-                            <a
-                                href="{{ url_for('static', filename=result.pdf_path | replace('static/', '', 1)) }}"
-                                target="_blank"
-                                rel="noopener"
-                                class="btn btn-outline-success">
-                                📄 View / Download Article PDF
-                            </a>
-                        </p>
-                    {% endif %}
+                            <span class="result-label">
+                                📚 Agricultural Article
+                            </span>
 
-                {% elif result_type == 'policy' %}
+                            <h3 class="result-title">
+                                {{ data.title }}
+                            </h3>
 
-                    <span class="result-label">
-                        🏛️ Government Policy
-                    </span>
+                            <div class="answer-content">
+                                {{ data.content or 'No article content available.' }}
+                            </div>
 
-                    <h5 class="fw-bold">{{ result.title }}</h5>
+                            {% if data.image_path %}
+                                <img
+                                    src="{{ url_for('static', filename=data.image_path | replace('static/', '', 1)) }}"
+                                    alt="Article image"
+                                    class="result-image">
+                            {% endif %}
 
-                    <h6 class="fw-bold mt-3">Description</h6>
-                    <div class="answer-content">{{ result.description or 'No description available.' }}</div>
+                            {% if data.pdf_path %}
+                                <p class="mb-0">
+                                    <a
+                                        href="{{ url_for('static', filename=data.pdf_path | replace('static/', '', 1)) }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="btn-outline-result">
+                                        📄 View / Download Article PDF ↗
+                                    </a>
+                                </p>
+                            {% endif %}
 
-                    {% if result.department %}
-                        <p class="mt-3">
-                            <strong>Department:</strong> {{ result.department }}
-                        </p>
-                    {% endif %}
+                        {% elif item.type == 'policy' %}
 
-                    {% if result.eligibility %}
-                        <h6 class="fw-bold mt-3">Eligibility</h6>
-                        <div class="answer-content">{{ result.eligibility }}</div>
-                    {% endif %}
+                            <span class="result-label">
+                                🏛️ Government Policy
+                            </span>
 
-                    {% if result.benefits %}
-                        <h6 class="fw-bold mt-3">Benefits</h6>
-                        <div class="answer-content">{{ result.benefits }}</div>
-                    {% endif %}
+                            <h3 class="result-title">
+                                {{ data.title }}
+                            </h3>
 
-                    {% if result.official_url and result.official_url.startswith(('https://', 'http://')) %}
-                        <a
-                            href="{{ result.official_url }}"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="btn btn-outline-success mt-3">
-                            🌐 Visit Official Website
-                        </a>
-                    {% endif %}
+                            <h4 class="detail-heading">Description</h4>
+                            <div class="answer-content">
+                                {{ data.description or 'No description available.' }}
+                            </div>
 
-                    {% if result.pdf_path %}
-                        <p class="mt-3">
-                            <a
-                                href="{{ url_for('static', filename=result.pdf_path | replace('static/', '', 1)) }}"
-                                target="_blank"
-                                rel="noopener"
-                                class="btn btn-outline-success">
-                                📄 View / Download Policy PDF
-                            </a>
-                        </p>
-                    {% endif %}
+                            {% if data.department %}
+                                <p class="department-text">
+                                    <strong>Department:</strong>
+                                    {{ data.department }}
+                                </p>
+                            {% endif %}
 
-                {% endif %}
+                            {% if data.eligibility %}
+                                <h4 class="detail-heading">✓ Eligibility</h4>
+                                <div class="answer-content">
+                                    {{ data.eligibility }}
+                                </div>
+                            {% endif %}
 
-                {% if similarity_score is defined %}
-                    <p class="small text-muted mt-3 mb-0">
-                        Match score: {{ similarity_score }}%
-                    </p>
-                {% endif %}
+                            {% if data.benefits %}
+                                <h4 class="detail-heading">✦ Benefits</h4>
+                                <div class="answer-content">
+                                    {{ data.benefits }}
+                                </div>
+                            {% endif %}
 
-                <a href="/query" class="btn btn-query">
+                            {% if data.official_url and data.official_url.startswith(('https://', 'http://')) %}
+                                <a
+                                    href="{{ data.official_url }}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="btn-outline-result">
+                                    🌐 Visit Official Website ↗
+                                </a>
+                            {% endif %}
+
+                            {% if data.pdf_path %}
+                                <p class="mb-0">
+                                    <a
+                                        href="{{ url_for('static', filename=data.pdf_path | replace('static/', '', 1)) }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="btn-outline-result">
+                                        📄 View / Download Policy PDF ↗
+                                    </a>
+                                </p>
+                            {% endif %}
+
+                        {% endif %}
+
+                        <div class="match-score">
+                            Relevance score:
+                            <strong>
+                                {{ (item.similarity_score * 100)|round(1) }}%
+                            </strong>
+                        </div>
+
+                    </div>
+                {% endfor %}
+
+                <a href="/query" class="btn-query another-query">
                     🔍 Ask Another Question
                 </a>
 
@@ -266,7 +578,12 @@
         {% endif %}
 
     </div>
-</div>
+
+</main>
+
+<footer>
+    © 2026 <span>AgriVault</span> | Agricultural Knowledge Repository
+</footer>
 
 </body>
 </html>

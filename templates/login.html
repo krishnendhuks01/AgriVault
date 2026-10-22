@@ -6,105 +6,302 @@
 
     <title>Login - AgriVault</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
 
     <style>
+        :root {
+            --bg: #0b1711;
+            --surface: #12251a;
+            --card: #193426;
+            --green: #c5f36a;
+            --text: #f2f7f0;
+            --muted: #b1c2b5;
+            --border: #304b39;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
-            background: #f4f8f3;
+            background:
+                radial-gradient(ellipse at top right,
+                    rgba(197, 243, 106, 0.12), transparent 45%),
+                linear-gradient(135deg, #0b1711, #10291c, #183523);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(11, 33, 24, 0.96);
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .navbar-brand {
+            color: var(--text) !important;
+            font-size: 25px;
+            font-weight: 700;
+        }
+
+        .navbar-brand span {
+            color: var(--green);
+        }
+
+        .home-link {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .home-link:hover {
+            color: var(--green);
+        }
+
+        /* Main layout */
+        .login-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 45px 18px;
         }
 
         .login-box {
-            max-width: 450px;
-            margin: 80px auto;
-            background: white;
-            padding: 40px;
+            width: 100%;
+            max-width: 460px;
+            background: rgba(18, 37, 26, 0.96);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 42px;
+            box-shadow: 0 25px 65px rgba(0, 0, 0, 0.28);
+        }
+
+        .logo-icon {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
             border-radius: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            background: rgba(197, 243, 106, 0.10);
+            border: 1px solid rgba(197, 243, 106, 0.20);
+            font-size: 35px;
         }
 
         .logo {
-            color: #2e7d32;
-            font-weight: 700;
             text-align: center;
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--text);
             margin-bottom: 10px;
+        }
+
+        .logo span {
+            color: var(--green);
         }
 
         .subtitle {
             text-align: center;
-            color: #777;
-            margin-bottom: 30px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+
+        .form-label {
+            color: #dce8dd;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 9px;
+        }
+
+        .form-control {
+            background: #0d1d13;
+            border: 1px solid #36513e;
+            color: var(--text);
+            border-radius: 10px;
+            padding: 13px 15px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .form-control::placeholder {
+            color: #718576;
+        }
+
+        .form-control:focus {
+            background: #0d1d13;
+            color: var(--text);
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(197, 243, 106, 0.10);
         }
 
         .btn-login {
-            background: #2e7d32;
-            color: white;
             width: 100%;
-            padding: 12px;
+            background: var(--green);
+            color: #122016;
+            padding: 13px;
             border-radius: 10px;
             border: none;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: 0.25s;
         }
 
         .btn-login:hover {
-            background: #256628;
-            color: white;
+            background: #b2e65b;
+            color: #122016;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(197, 243, 106, 0.12);
         }
 
         .register-link {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 25px;
+            color: var(--muted);
+            font-size: 13px;
         }
 
         .register-link a {
-            color: #2e7d32;
+            color: var(--green);
             text-decoration: none;
             font-weight: 600;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 22px;
+        }
+
+        .back-home a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .back-home a:hover {
+            color: var(--green);
+        }
+
+        footer {
+            text-align: center;
+            padding: 18px;
+            color: #829588;
+            font-size: 12px;
+            border-top: 1px solid rgba(48, 75, 57, 0.6);
+        }
+
+        @media (max-width: 480px) {
+            .login-box {
+                padding: 30px 22px;
+                border-radius: 18px;
+            }
+
+            .logo {
+                font-size: 27px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-<div class="login-box">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand text-decoration-none" href="/">
+                Agri<span>Vault</span> 🌾
+            </a>
 
-    <h2 class="logo">🌾 AgriVault</h2>
-
-    <p class="subtitle">Login to your account</p>
-
-    <form method="POST" action="/login">
-
-        <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email"
-                   name="email"
-                   class="form-control"
-                   placeholder="Enter your email"
-                   required>
+            <a href="/" class="home-link">← Back to Home</a>
         </div>
+    </nav>
 
-        <div class="mb-3">
-            <label class="form-label">Password</label>
-            <input type="password"
-                   name="password"
-                   class="form-control"
-                   placeholder="Enter your password"
-                   required>
+    <!-- Login Section -->
+    <main class="login-section">
+        <div class="login-box">
+
+            <div class="logo-icon">🌱</div>
+
+            <h1 class="logo">
+                Welcome <span>Back!</span>
+            </h1>
+
+            <p class="subtitle">
+                Login to AgriVault and explore agricultural
+                knowledge, farming resources and government policies.
+            </p>
+
+            <form method="POST" action="/login">
+
+                <div class="mb-4">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        class="form-control"
+                        placeholder="Enter your email"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <div class="mb-4">
+                    <label for="password" class="form-label">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="form-control"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn-login">
+                    Login to AgriVault →
+                </button>
+
+            </form>
+
+            <div class="register-link">
+                Don't have an account?
+                <a href="/register">Create an account</a>
+            </div>
+
+            <div class="back-home">
+                <a href="/">🌿 Agricultural Knowledge and Policy Repository</a>
+            </div>
+
         </div>
+    </main>
 
-        <button type="submit" class="btn-login">
-            Login
-        </button>
-
-    </form>
-
-    <div class="register-link">
-        Don't have an account?
-        <a href="/register">Register</a>
-    </div>
-
-</div>
+    <!-- Footer -->
+    <footer>
+        © 2026 AgriVault. Agricultural Knowledge and Policy Repository.
+    </footer>
 
 </body>
 </html>

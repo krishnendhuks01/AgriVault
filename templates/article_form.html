@@ -4,97 +4,425 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <title>{{ page_title }} - AgriVault</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
 
     <style>
+        :root {
+            --bg: #0b1711;
+            --surface: #12251a;
+            --card: #193426;
+            --green: #c5f36a;
+            --text: #f2f7f0;
+            --muted: #b1c2b5;
+            --border: #304b39;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background: #f4f8f3;
-            font-family: Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(ellipse at top right,
+                rgba(81, 135, 76, 0.12), transparent 42%),
+                var(--bg);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .navbar {
+            background: rgba(18, 37, 26, 0.96);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+        }
+
+        .navbar-brand {
+            color: var(--text) !important;
+            font-weight: 700;
+            font-size: 1.15rem;
+        }
+
+        .brand-icon {
+            color: var(--green);
+        }
+
+        .back-link {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.88rem;
+        }
+
+        .back-link:hover {
+            color: var(--green);
+        }
+
+        .page-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 42px 16px 60px;
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
+        }
+
+        .eyebrow {
+            color: var(--green);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .page-heading h1 {
+            font-size: clamp(1.7rem, 4vw, 2.35rem);
+            font-weight: 800;
+            letter-spacing: -0.8px;
+            margin-bottom: 10px;
+        }
+
+        .page-heading p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.7;
         }
 
         .form-card {
-            max-width: 800px;
-            margin: 40px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 4px 18px rgba(0,0,0,.07);
+            background: linear-gradient(145deg, #14291d, #102017);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.15);
+        }
+
+        .section-title {
+            color: var(--green);
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            color: var(--text);
+            font-size: 0.87rem;
+            font-weight: 600;
+            margin-bottom: 9px;
+        }
+
+        .form-control,
+        .form-select {
+            background-color: #0b1711;
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 0.9rem;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            background-color: #0b1711;
+            color: var(--text);
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(197, 243, 106, 0.1);
+        }
+
+        .form-control::placeholder {
+            color: #788b7c;
+        }
+
+        .form-select option {
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        textarea.form-control {
+            min-height: 190px;
+            resize: vertical;
+            line-height: 1.8;
+        }
+
+        .form-text {
+            color: var(--muted) !important;
+            font-size: 0.78rem;
+            line-height: 1.7;
         }
 
         .upload-box {
-            background: #f8fbf7;
-            border: 1px dashed #80a980;
-            border-radius: 12px;
-            padding: 18px;
+            background: rgba(11, 23, 17, 0.65);
+            border: 1px dashed #49694d;
+            border-radius: 15px;
+            padding: 22px;
+            margin-bottom: 20px;
+        }
+
+        .upload-box:focus-within {
+            border-color: var(--green);
+        }
+
+        .upload-heading {
+            color: var(--text);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 12px;
         }
 
         .current-image {
-            max-width: 220px;
-            max-height: 180px;
+            display: block;
+            max-width: 100%;
+            max-height: 220px;
             object-fit: contain;
-            border-radius: 8px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 5px;
+            background: var(--surface);
+        }
+
+        .divider {
+            border-color: var(--border);
+            opacity: 1;
+            margin: 30px 0;
+        }
+
+        .btn-green {
+            background: var(--green);
+            border: 1px solid var(--green);
+            color: #132017;
+            font-weight: 700;
+            border-radius: 10px;
+            padding: 11px 18px;
+            transition: 0.2s;
+        }
+
+        .btn-green:hover {
+            background: #d7ff91;
+            border-color: #d7ff91;
+            color: #132017;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-green {
+            background: transparent;
+            color: var(--green);
+            border: 1px solid #597748;
+            border-radius: 10px;
+            padding: 11px 18px;
+            font-weight: 600;
+        }
+
+        .btn-outline-green:hover {
+            background: var(--green);
+            color: #132017;
+            border-color: var(--green);
+        }
+
+        .btn-muted {
+            background: transparent;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 11px 18px;
+        }
+
+        .btn-muted:hover {
+            background: var(--card);
+            color: var(--text);
+            border-color: var(--muted);
+        }
+
+        .alert {
+            border-radius: 10px;
+            font-size: 0.88rem;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+        }
+
+        .modal-header,
+        .modal-footer {
+            border-color: var(--border);
+        }
+
+        .modal-header {
+            background: var(--card);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .modal-title {
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .preview-category {
+            display: inline-block;
+            background: rgba(197, 243, 106, 0.12);
+            color: var(--green);
+            border: 1px solid #496344;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 0.78rem;
+            margin-bottom: 15px;
+        }
+
+        #previewArticleTitle {
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+
+        #previewContent {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            line-height: 1.9;
+            color: var(--muted);
+        }
+
+        .preview-meta {
+            color: var(--muted);
+            overflow-wrap: anywhere;
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            padding: 20px 12px;
+            text-align: center;
+            font-size: 0.78rem;
+        }
+
+        @media (max-width: 576px) {
+            .page-container {
+                padding-top: 28px;
+            }
+
+            .form-card {
+                padding: 20px 16px;
+                border-radius: 15px;
+            }
+
+            .upload-box {
+                padding: 16px;
+            }
+
+            .form-actions {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .form-actions .btn,
+            .form-actions a {
+                width: 100%;
+                margin: 0 !important;
+            }
         }
     </style>
 </head>
 
 <body>
-<div class="container">
-    <div class="form-card">
 
-        <h2 class="text-success fw-bold mb-4">
-            {{ page_title }}
-        </h2>
+<nav class="navbar">
+    <div class="container">
+        <a class="navbar-brand text-decoration-none" href="/admin_dashboard">
+            <span class="brand-icon">🌾</span> AgriVault
+            <span class="text-secondary fw-normal">Admin</span>
+        </a>
+
+        <a href="{{ url_for('manage_articles') }}" class="back-link">
+            ← Back to Articles
+        </a>
+    </div>
+</nav>
+
+<main class="page-container">
+
+    <div class="page-heading">
+        <div class="eyebrow">Content Management</div>
+        <h1>{{ page_title }}</h1>
+        <p>
+            Create and maintain agricultural knowledge resources
+            with useful information, keywords, images, and documents.
+        </p>
+    </div>
+
+    <div class="form-card">
 
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">
+                <div class="alert alert-{{ category }} alert-dismissible fade show"
+                     role="alert">
                     {{ message }}
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Close"></button>
                 </div>
             {% endfor %}
         {% endwith %}
 
         <form method="POST" enctype="multipart/form-data">
 
-            <!-- Article Title -->
-            <div class="mb-3">
-                <label class="form-label">Article Title</label>
+            <h2 class="section-title">📝 Article Information</h2>
+
+            <div class="mb-4">
+                <label class="form-label" for="title">
+                    Article Title
+                </label>
                 <input type="text"
+                       id="title"
                        name="title"
                        class="form-control"
+                       placeholder="Enter a clear article title"
                        value="{{ article[1] if article else '' }}"
                        required>
             </div>
 
-            <!-- Article Content -->
-            <div class="mb-3">
-                <label class="form-label">
+            <div class="mb-4">
+                <label class="form-label" for="content">
                     Agricultural Information
                 </label>
-                <textarea name="content"
+                <textarea id="content"
+                          name="content"
                           class="form-control"
                           rows="8"
+                          placeholder="Write the agricultural information here..."
                           required>{{ article[2] if article else '' }}</textarea>
+                <div class="form-text mt-2">
+                    Provide clear and useful information for farmers and readers.
+                </div>
             </div>
 
-            <!-- Keywords -->
-            <div class="mb-3">
-                <label class="form-label">Keywords</label>
+            <div class="mb-4">
+                <label class="form-label" for="keywords">
+                    Keywords
+                </label>
                 <input type="text"
+                       id="keywords"
                        name="keywords"
                        class="form-control"
                        placeholder="e.g. rice, soil, irrigation"
                        value="{{ article[3] if article else '' }}">
+                <div class="form-text mt-2">
+                    Add relevant terms to help users find this article through search.
+                </div>
             </div>
 
-            <!-- Category -->
             <div class="mb-4">
-                <label class="form-label">Category</label>
+                <label class="form-label" for="category_id">
+                    Category
+                </label>
 
-                <select name="category_id"
+                <select id="category_id"
+                        name="category_id"
                         class="form-select"
                         required>
 
@@ -112,33 +440,28 @@
                 </select>
             </div>
 
-            <hr>
+            <hr class="divider">
 
-            <h5 class="text-success fw-bold mb-3">
-                📎 Article Attachments
-            </h5>
+            <h2 class="section-title">📎 Article Attachments</h2>
 
-            <!-- Image Upload -->
-            <div class="upload-box mb-4">
-                <label class="form-label fw-semibold">
+            <div class="upload-box">
+                <div class="upload-heading">
                     🖼️ Upload Agricultural Image
-                </label>
+                </div>
 
                 <input type="file"
                        name="image_file"
                        class="form-control"
                        accept=".jpg,.jpeg,.png,.webp">
 
-                <small class="text-muted">
+                <div class="form-text mt-2">
                     Optional: JPG, JPEG, PNG or WEBP. Maximum total
-                    upload size: 15 MB.
-                </small>
+                    request upload size is 15 MB.
+                </div>
 
                 {% if article and article[5] %}
-                    <div class="mt-3">
-                        <p class="mb-2 fw-semibold">
-                            Current Image:
-                        </p>
+                    <div class="mt-4">
+                        <p class="form-label">Current Image</p>
 
                         <a href="{{ url_for('static', filename=article[5]) }}"
                            target="_blank"
@@ -148,120 +471,142 @@
                                  class="current-image">
                         </a>
 
-                        <p class="small text-muted mt-2">
+                        <p class="form-text mt-2">
                             Upload a new image only if you want to replace it.
                         </p>
                     </div>
                 {% endif %}
             </div>
 
-            <!-- PDF Upload -->
-            <div class="upload-box mb-4">
-                <label class="form-label fw-semibold">
+            <div class="upload-box">
+                <div class="upload-heading">
                     📄 Upload PDF Document
-                </label>
+                </div>
 
                 <input type="file"
                        name="pdf_file"
                        class="form-control"
                        accept=".pdf">
 
-                <small class="text-muted">
-                    Optional: PDF documents such as farming guides
-                    and government policy documents.
-                </small>
+                <div class="form-text mt-2">
+                    Optional: Add PDF farming guides, research documents,
+                    or agricultural references.
+                </div>
 
                 {% if article and article[6] %}
-                    <div class="mt-3">
-                        <p class="mb-1 fw-semibold">
-                            Current PDF:
-                        </p>
+                    <div class="mt-4">
+                        <p class="form-label">Current PDF</p>
 
                         <a href="{{ url_for('static', filename=article[6]) }}"
                            target="_blank"
                            rel="noopener"
-                           class="btn btn-sm btn-outline-danger">
+                           class="btn btn-outline-green btn-sm">
                             📄 Open Current PDF
                         </a>
 
-                        <p class="small text-muted mt-2">
+                        <p class="form-text mt-2">
                             Upload a new PDF only if you want to replace it.
                         </p>
                     </div>
                 {% endif %}
             </div>
 
-            
-<!-- Buttons -->
-<button type="button" class="btn btn-outline-success"
-        data-bs-toggle="modal" data-bs-target="#articlePreviewModal"
-        onclick="updatePreview()">
-    👁️ Preview Article
-</button>
+            <hr class="divider">
 
-<button type="submit" class="btn btn-success">
-    💾 Save Article
-</button>
+            <div class="form-actions d-flex flex-wrap gap-3">
 
-<a href="{{ url_for('manage_articles') }}"
-   class="btn btn-outline-secondary">
-    Cancel
-</a>
+                <button type="button"
+                        class="btn btn-outline-green"
+                        data-bs-toggle="modal"
+                        data-bs-target="#articlePreviewModal"
+                        onclick="updatePreview()">
+                    👁️ Preview Article
+                </button>
 
+                <button type="submit" class="btn btn-green">
+                    💾 Save Article
+                </button>
+
+                <a href="{{ url_for('manage_articles') }}"
+                   class="btn btn-muted text-center">
+                    Cancel
+                </a>
+
+            </div>
 
         </form>
-        
+
+    </div>
+</main>
+
+<footer>
+    © AgriVault | Agricultural Knowledge and Policy Repository
+</footer>
+
 <!-- Article Preview Modal -->
 <div class="modal fade" id="articlePreviewModal" tabindex="-1"
      aria-labelledby="previewTitle" aria-hidden="true">
+
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
 
-            <div class="modal-header bg-success text-white">
+            <div class="modal-header">
                 <h5 class="modal-title" id="previewTitle">
-                    Article Preview
+                    👁️ Article Preview
                 </h5>
-                <button type="button" class="btn-close btn-close-white"
-                        data-bs-dismiss="modal"></button>
+
+                <button type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
             </div>
 
             <div class="modal-body p-4">
-                <span class="badge bg-success mb-3" id="previewCategory">
+
+                <span class="preview-category" id="previewCategory">
                     Category
                 </span>
 
-                <h2 class="fw-bold text-success" id="previewArticleTitle">
+                <h2 class="mb-3" id="previewArticleTitle">
                     Article Title
                 </h2>
 
-                <div id="previewImageContainer" class="my-3"
+                <div id="previewImageContainer"
+                     class="my-3"
                      style="display:none;">
-                    <img id="previewImage" src="" alt="Article image"
+
+                    <img id="previewImage"
+                         src=""
+                         alt="Article preview"
                          class="img-fluid rounded"
                          style="max-height:350px; width:auto;">
                 </div>
 
-                <hr>
+                <hr class="divider">
 
-                <div id="previewContent"
-                     style="white-space:pre-wrap; line-height:1.8;">
+                <div id="previewContent">
+                    Article content will appear here.
                 </div>
 
-                <p class="text-muted mt-3 mb-2">
+                <p class="preview-meta mt-4 mb-2">
                     <strong>Keywords:</strong>
                     <span id="previewKeywords"></span>
                 </p>
 
-                <a id="previewPdf" href="#" target="_blank"
+                <a id="previewPdf"
+                   href="#"
+                   target="_blank"
                    rel="noopener"
-                   class="btn btn-outline-danger mt-2"
+                   class="btn btn-outline-green mt-2"
                    style="display:none;">
                     📄 View PDF
                 </a>
+
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary"
+                <button type="button"
+                        class="btn btn-muted"
                         data-bs-dismiss="modal">
                     Back to Editing
                 </button>
@@ -271,11 +616,7 @@
     </div>
 </div>
 
-    </div>
-</div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 
 <script>
 function updatePreview() {
@@ -284,28 +625,80 @@ function updatePreview() {
     const keywords = document.querySelector('[name="keywords"]').value;
 
     const categorySelect = document.querySelector('[name="category_id"]');
+
     const category = categorySelect.selectedIndex > 0
         ? categorySelect.options[categorySelect.selectedIndex].text
         : "Agricultural Information";
 
     document.getElementById("previewArticleTitle").textContent =
-        title || "Untitled Article";
+        title.trim() || "Untitled Article";
 
     document.getElementById("previewContent").textContent =
         content || "Please enter article content first.";
 
     document.getElementById("previewKeywords").textContent =
-        keywords || "No keywords added";
+        keywords.trim() || "No keywords added";
 
     document.getElementById("previewCategory").textContent = category;
+
+    // Preview a newly selected image, or the current saved image.
+    const imageInput = document.querySelector('[name="image_file"]');
+    const imageContainer = document.getElementById("previewImageContainer");
+    const previewImage = document.getElementById("previewImage");
+
+    if (imageInput.files && imageInput.files[0]) {
+        const file = imageInput.files[0];
+
+        if (previewImage.dataset.objectUrl) {
+            URL.revokeObjectURL(previewImage.dataset.objectUrl);
+        }
+
+        const objectUrl = URL.createObjectURL(file);
+        previewImage.src = objectUrl;
+        previewImage.dataset.objectUrl = objectUrl;
+        imageContainer.style.display = "block";
+    } else {
+        const currentImage = document.querySelector('.current-image');
+
+        if (currentImage) {
+            previewImage.src = currentImage.src;
+            imageContainer.style.display = "block";
+        } else {
+            previewImage.removeAttribute("src");
+            imageContainer.style.display = "none";
+        }
+    }
+
+    // Preview a newly selected PDF, or link to the current saved PDF.
+    const pdfInput = document.querySelector('[name="pdf_file"]');
+    const previewPdf = document.getElementById("previewPdf");
+
+    if (previewPdf.dataset.objectUrl) {
+        URL.revokeObjectURL(previewPdf.dataset.objectUrl);
+        delete previewPdf.dataset.objectUrl;
+    }
+
+    if (pdfInput.files && pdfInput.files[0]) {
+        const pdfUrl = URL.createObjectURL(pdfInput.files[0]);
+
+        previewPdf.href = pdfUrl;
+        previewPdf.dataset.objectUrl = pdfUrl;
+        previewPdf.style.display = "inline-block";
+    } else {
+        const currentPdfLink = document.querySelector(
+            '.upload-box a[href$=".pdf"], .upload-box a[href*=".pdf?"]'
+        );
+
+        if (currentPdfLink) {
+            previewPdf.href = currentPdfLink.href;
+            previewPdf.style.display = "inline-block";
+        } else {
+            previewPdf.removeAttribute("href");
+            previewPdf.style.display = "none";
+        }
+    }
 }
 </script>
-</body>
-</html>
-
-
-</body>
-</html>
 
 </body>
 </html>

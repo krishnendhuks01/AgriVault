@@ -6,104 +6,266 @@
     <title>Agricultural Articles | AgriVault</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --bg: #0b1711;
+            --surface: #12251a;
+            --card: #193426;
+            --green: #c5f36a;
+            --text: #f2f7f0;
+            --muted: #b1c2b5;
+            --border: #304b39;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
-            background: #f5f8f4;
-            color: #26352a;
+            background:
+                radial-gradient(ellipse at top right, rgba(76, 125, 57, .15), transparent 40%),
+                var(--bg);
+            color: var(--text);
+            min-height: 100vh;
         }
 
         .navbar {
-            background: #1b5e35;
+            background: rgba(18, 37, 26, .96);
+            border-bottom: 1px solid var(--border);
             padding: 15px 0;
         }
 
         .navbar-brand {
-            color: white;
+            color: var(--green) !important;
             font-weight: 700;
-            font-size: 25px;
-        }
-
-        .navbar-brand:hover {
-            color: #e4f3e7;
+            font-size: 23px;
         }
 
         .nav-link {
-            color: white;
+            color: var(--muted) !important;
             margin-left: 15px;
+            font-size: .9rem;
+            transition: .2s;
         }
 
         .nav-link:hover {
-            color: #c8e6c9;
+            color: var(--green) !important;
+        }
+
+        .navbar-toggler {
+            border: 1px solid var(--border);
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 2px rgba(197, 243, 106, .2);
         }
 
         .page-heading {
-            padding: 45px 0 25px;
+            padding: 55px 0 35px;
+        }
+
+        .eyebrow {
+            color: var(--green);
+            font-size: .78rem;
+            letter-spacing: 2px;
+            font-weight: 600;
         }
 
         .page-heading h1 {
-            color: #1b5e35;
-            font-weight: 700;
+            color: var(--text);
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .heading-description {
+            color: var(--muted);
+            font-size: .95rem;
+            max-width: 650px;
+            margin: 12px auto 0;
+            line-height: 1.8;
+        }
+
+        .heading-line {
+            width: 65px;
+            height: 4px;
+            background: var(--green);
+            border-radius: 5px;
+            margin: 20px auto 0;
         }
 
         .article-card {
-            background: white;
-            border: none;
-            border-radius: 14px;
+            background: linear-gradient(145deg, var(--surface), #102017);
+            border: 1px solid var(--border);
+            border-radius: 17px;
             overflow: hidden;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
-            transition: transform 0.2s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .14);
+            transition: transform .25s ease, border-color .25s ease,
+                        box-shadow .25s ease;
         }
 
         .article-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-5px);
+            border-color: #668b47;
+            box-shadow: 0 16px 35px rgba(0, 0, 0, .22);
+        }
+
+        .image-wrapper {
+            height: 215px;
+            overflow: hidden;
+            background: var(--card);
         }
 
         .article-image {
             width: 100%;
-            height: 210px;
+            height: 100%;
             object-fit: cover;
+            transition: transform .4s ease;
+        }
+
+        .article-card:hover .article-image {
+            transform: scale(1.04);
+        }
+
+        .article-image-placeholder {
+            height: 170px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #193426, #203d2b);
+            color: var(--green);
+            font-size: 3rem;
+        }
+
+        .article-body {
+            padding: 24px;
         }
 
         .category-badge {
-            background: #e1f2e4;
-            color: #1b5e35;
+            display: inline-block;
+            background: rgba(197, 243, 106, .09);
+            color: var(--green);
+            border: 1px solid rgba(197, 243, 106, .22);
             padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+            border-radius: 30px;
+            font-size: .72rem;
+            font-weight: 500;
         }
 
         .article-title {
-            color: #1b5e35;
+            color: var(--text);
             font-weight: 600;
+            font-size: 1.08rem;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
         }
 
         .article-content {
-            font-size: 14px;
-            line-height: 1.8;
-            color: #58645b;
+            font-size: .84rem;
+            line-height: 1.85;
+            color: var(--muted);
             white-space: pre-line;
+            overflow-wrap: anywhere;
         }
 
         .btn-green {
-            background: #1b5e35;
-            color: white;
-            border-radius: 7px;
+            background: var(--green);
+            color: var(--bg);
+            border: 1px solid var(--green);
+            border-radius: 8px;
+            font-size: .78rem;
+            font-weight: 600;
+            padding: 9px 13px;
+            transition: .2s;
         }
 
         .btn-green:hover {
-            background: #144728;
-            color: white;
+            background: #d7ff91;
+            color: var(--bg);
+            border-color: #d7ff91;
+        }
+
+        .btn-pdf {
+            color: var(--green);
+            background: transparent;
+            border: 1px solid #668b47;
+            border-radius: 8px;
+            font-size: .78rem;
+            padding: 9px 13px;
+        }
+
+        .btn-pdf:hover {
+            background: rgba(197, 243, 106, .1);
+            color: var(--green);
+            border-color: var(--green);
+        }
+
+        .article-divider {
+            border-color: var(--border);
+            opacity: 1;
+        }
+
+        .collapse-content {
+            color: var(--muted);
+            font-size: .86rem;
+            line-height: 1.9;
+            white-space: pre-line;
+            overflow-wrap: anywhere;
+        }
+
+        .empty-state {
+            max-width: 650px;
+            margin: 10px auto 50px;
+            padding: 40px 25px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .empty-state h5 {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            color: var(--muted);
+            font-size: .88rem;
         }
 
         footer {
-            background: #1b5e35;
-            color: white;
+            background: #0a140e;
+            color: var(--muted);
             text-align: center;
-            padding: 18px;
-            margin-top: 50px;
+            padding: 22px 15px;
+            margin-top: 65px;
+            border-top: 1px solid var(--border);
+            font-size: .82rem;
+        }
+
+        @media (max-width: 576px) {
+            .page-heading {
+                padding: 38px 0 28px;
+            }
+
+            .page-heading h1 {
+                font-size: 1.9rem;
+            }
+
+            .article-body {
+                padding: 20px;
+            }
+
+            .image-wrapper {
+                height: 195px;
+            }
         }
     </style>
 </head>
@@ -116,45 +278,67 @@
             🌿 AgriVault
         </a>
 
-        <button class="navbar-toggler bg-light" type="button"
-                data-bs-toggle="collapse" data-bs-target="#navbarMenu">
-            <span class="navbar-toggler-icon"></span>
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarMenu"
+                aria-controls="navbarMenu" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"
+                  style="filter: invert(1);"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarMenu">
             <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="{{ url_for('user_dashboard') }}">Dashboard</a>
-                <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                <a class="nav-link" href="{{ url_for('user_dashboard') }}">
+                    Dashboard
+                </a>
+                <a class="nav-link" href="{{ url_for('logout') }}">
+                    Logout ↗
+                </a>
             </div>
         </div>
     </div>
 </nav>
 
-<div class="container">
+<main class="container">
 
-    <div class="page-heading text-center">
-        <h1>Agricultural Articles</h1>
-        <p class="text-muted mt-2">
-            Explore farming knowledge, crop cultivation and modern agricultural practices.
+    <section class="page-heading text-center">
+        <p class="eyebrow mb-3">AGRICULTURAL KNOWLEDGE</p>
+
+        <h1>Pest Articles</h1>
+
+        <p class="heading-description">
+            Explore farming knowledge, crop cultivation, pest management
+            and modern agricultural practices — all in one place.
         </p>
-    </div>
+
+        <div class="heading-line"></div>
+    </section>
 
     {% if articles %}
+
     <div class="row g-4">
 
         {% for article in articles %}
+
         <div class="col-md-6 col-lg-4">
 
-            <div class="article-card h-100">
+            <article class="article-card h-100">
 
                 {% if article.image_path %}
-                <img
-                    src="{{ url_for('static', filename=article.image_path) }}"
-                    class="article-image"
-                    alt="{{ article.title }}">
+                <div class="image-wrapper">
+                    <img
+                        src="{{ url_for('static', filename=article.image_path) }}"
+                        class="article-image"
+                        alt="{{ article.title }}"
+                        loading="lazy">
+                </div>
+                {% else %}
+                <div class="article-image-placeholder">
+                    🌱
+                </div>
                 {% endif %}
 
-                <div class="p-4">
+                <div class="article-body">
 
                     <span class="category-badge">
                         {{ article.category_name or 'Agriculture' }}
@@ -164,51 +348,71 @@
                         {{ article.title }}
                     </h5>
 
-                    <p class="article-content">
-                        {{ article.content[:220] if article.content else 'No content available.' }}
-                        {% if article.content and article.content|length > 220 %}...{% endif %}
+                    <p class="article-content mb-4">
+                        {{ article.content[:220] if article.content else 'No content available.' }}{% if article.content and article.content|length > 220 %}...{% endif %}
                     </p>
 
-                    <button class="btn btn-green btn-sm"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#article{{ article.article_id }}">
-                        Read Article
-                    </button>
+                    <div class="d-flex flex-wrap gap-2">
 
-                    {% if article.pdf_path %}
-                    <a href="{{ url_for('static', filename=article.pdf_path) }}"
-                       target="_blank"
-                       class="btn btn-outline-success btn-sm">
-                        View PDF
-                    </a>
-                    {% endif %}
+                        <button class="btn btn-green btn-sm"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#article{{ article.article_id }}"
+                                aria-expanded="false"
+                                aria-controls="article{{ article.article_id }}">
+                            Read Article ↓
+                        </button>
+
+                        {% if article.pdf_path %}
+                        <a href="{{ url_for('static', filename=article.pdf_path) }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="btn btn-pdf btn-sm">
+                            ↗ View PDF
+                        </a>
+                        {% endif %}
+
+                    </div>
 
                     <div class="collapse mt-3"
                          id="article{{ article.article_id }}">
-                        <hr>
-                        <div class="article-content">{{ article.content or 'No content available.' }}</div>
+                        <hr class="article-divider">
+
+                        <div class="collapse-content">
+                            {{ article.content or 'No content available.' }}
+                        </div>
                     </div>
 
                 </div>
-            </div>
+            </article>
 
         </div>
+
         {% endfor %}
 
     </div>
 
     {% else %}
-    <div class="alert alert-info text-center mt-4">
+
+    <div class="empty-state">
+        <div class="empty-icon">🌾</div>
+
         <h5>No Articles Available</h5>
-        <p class="mb-0">Articles uploaded by the admin will appear here.</p>
+
+        <p class="mb-0">
+            Agricultural articles uploaded by the admin will appear here.
+            Please check back later.
+        </p>
     </div>
+
     {% endif %}
 
-</div>
+</main>
 
 <footer>
-    <p class="mb-0">© 2026 AgriVault | Agricultural Knowledge and Policy Repository</p>
+    <p class="mb-0">
+        © 2026 AgriVault | Agricultural Knowledge and Policy Repository
+    </p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
