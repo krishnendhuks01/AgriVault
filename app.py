@@ -11,7 +11,6 @@ import html
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from dotenv import load_dotenv
-import os
 
 load_dotenv()
 
@@ -324,7 +323,179 @@ def query():
     )
 
 
+# Manage Categories
+@app.route("/admin/categories")
+@admin_required
+def manage_categories():
+    cursor = db.cursor(dictionary=True)
 
+    try:
+        cursor.execute("""
+            SELECT c.category_id, c.category_name,
+                   COUNT(a.article_id) AS article_count
+            FROM categories c
+            LEFT JOIN articles a
+                ON c.category_id = a.category_id
+            GROUP BY c.category_id, c.category_name
+            ORDER BY c.category_name
+        """)
+        categories = cursor.fetchall()
+    finally:
+        cursor.close()
+
+    print("MANAGE CATEGORIES ROUTE HIT", flush=True)
+
+    return render_template(
+        "manage_categories.html",
+        categories=categories
+    )
+
+
+# Add Category
+@app.route("/admin/categories/add", methods=["GET", "POST"])
+@admin_required
+def add_category():
+    if request.method == "POST":
+        category_name = request.form.get(
+            "category_name", ""
+        ).strip()
+
+        if not category_name:
+            flash("Category name is required.", "danger")
+            return redirect(url_for("add_category"))
+
+        cursor = db.cursor()
+
+        try:
+            cursor.execute("""
+                INSERT INTO categories (category_name)
+                VALUES (%s)
+            """, (category_name,))
+            db.commit()
+            flash("Category added successfully!", "success")
+
+        except mysql.connector.IntegrityError:
+            db.rollback()
+            flash("This category already exists.", "danger")
+
+        finally:
+            cursor.close()
+
+        return redirect(url_for("manage_categories"))
+
+    return render_template(
+        "category_form.html",
+        category=None,
+        page_title="Add Category"
+    )
+
+
+# Edit Category
+@app.route(
+    "/admin/categories/edit/<int:category_id>",
+    methods=["GET", "POST"]
+)
+@admin_required
+def edit_category(category_id):
+    cursor = db.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT category_id, category_name
+            FROM categories
+            WHERE category_id = %s
+        """, (category_id,))
+        category = cursor.fetchone()
+    finally:
+        cursor.close()
+
+    if not category:
+        flash("Category not found.", "danger")
+        return redirect(url_for("manage_categories"))
+
+    if request.method == "POST":
+        category_name = request.form.get(
+            "category_name", ""
+        ).strip()
+
+        if not category_name:
+            flash("Category name is required.", "danger")
+            return redirect(
+                url_for("edit_category", category_id=category_id)
+            )
+
+        cursor = db.cursor()
+
+        try:
+            cursor.execute("""
+                UPDATE categories
+                SET category_name = %s
+                WHERE category_id = %s
+            """, (category_name, category_id))
+            db.commit()
+            flash("Category updated successfully!", "success")
+
+        except mysql.connector.IntegrityError:
+            db.rollback()
+            flash("A category with this name already exists.", "danger")
+
+        finally:
+            cursor.close()
+
+        return redirect(url_for("manage_categories"))
+
+    return render_template(
+        "category_form.html",
+        category=category,
+        page_title="Edit Category"
+    )
+
+
+# Delete Category — block deletion if articles use it
+@app.route(
+    "/admin/categories/delete/<int:category_id>",
+    methods=["POST"]
+)
+@admin_required
+def delete_category(category_id):
+    cursor = db.cursor()
+
+    try:
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM articles
+            WHERE category_id = %s
+        """, (category_id,))
+        article_count = cursor.fetchone()[0]
+
+        if article_count > 0:
+            flash(
+                "This category is used by articles. "
+                "Reassign those articles before deleting it.",
+                "danger"
+            )
+            return redirect(url_for("manage_categories"))
+
+        cursor.execute("""
+            DELETE FROM categories
+            WHERE category_id = %s
+        """, (category_id,))
+
+        if cursor.rowcount == 0:
+            db.rollback()
+            flash("Category not found.", "danger")
+        else:
+            db.commit()
+            flash("Category deleted successfully!", "success")
+
+    except mysql.connector.Error:
+        db.rollback()
+        flash("Could not delete the category.", "danger")
+
+    finally:
+        cursor.close()
+
+    return redirect(url_for("manage_categories"))
 
 # Admin Dashboard
 @app.route("/admin_dashboard")
